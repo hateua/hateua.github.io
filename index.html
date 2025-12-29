@@ -1,10 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Мой сайт</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Визитка</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #1a1a1a, #2c3e50);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); /* Эффект стекла */
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            width: 300px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #00ff88; /* Неоновая обводка */
+            margin-bottom: 15px;
+            object-fit: cover;
+        }
+        h1 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        p {
+            color: #ccc;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: block;
+            background: white;
+            color: #333;
+            text-decoration: none;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.05); /* Увеличение при наведении */
+            background: #00ff88;
+            box-shadow: 0 0 15px #00ff88;
+        }
+        /* Спец кнопка для важного проекта */
+        .btn-highlight {
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            color: white;
+            border: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>Привет! Это мой первый сайт на GitHub.</h1>
-    <p>Здесь я буду выкладывать свои проекты.</p>
+
+    <div class="container">
+        <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Аватар" class="avatar">
+        
+        <h1>Ivan Ska</h1>
+        
+        <p>Разработчик. Создаю расширения и ботов.</p>
+
+        <a href="https://t.me/ваш_ник" class="btn">Telegram</a>
+        <a href="https://github.com/hateua" class="btn">GitHub</a>
+        
+        <a href="#" class="btn btn-highlight">Мой проект для Threads</a>
+    </div>
+
 </body>
 </html>
