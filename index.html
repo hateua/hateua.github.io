@@ -2,85 +2,251 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя Визитка</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Курсы Валют">
+    
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1138/1138038.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1138/1138038.png">
+
+    <title>RealTime Rates</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(45deg, #1a1a1a, #2c3e50);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #000;
+            background-image: linear-gradient(180deg, #111 0%, #000 100%);
             color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: env(safe-area-inset-top);
+            -webkit-tap-highlight-color: transparent;
         }
-        .container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px); /* Эффект стекла */
-            padding: 40px;
+
+        /* Заголовок и статус обновления */
+        header {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 { margin: 0; font-weight: 600; font-size: 22px; }
+
+        .status-badge {
+            font-size: 11px;
+            background: #1c1c1e;
+            padding: 5px 10px;
             border-radius: 20px;
-            text-align: center;
-            width: 300px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #8e8e93;
+            border: 1px solid #333;
         }
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid #00ff88; /* Неоновая обводка */
-            margin-bottom: 15px;
-            object-fit: cover;
+
+        .converter-box { width: 90%; max-width: 400px; }
+
+        /* Группа ввода */
+        .input-container {
+            background: #1c1c1e;
+            border-radius: 16px;
+            padding: 5px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #333;
         }
-        h1 {
-            font-size: 24px;
-            margin: 10px 0;
-        }
-        p {
-            color: #ccc;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: block;
-            background: white;
-            color: #333;
-            text-decoration: none;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            transform: scale(1.05); /* Увеличение при наведении */
-            background: #00ff88;
-            box-shadow: 0 0 15px #00ff88;
-        }
-        /* Спец кнопка для важного проекта */
-        .btn-highlight {
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            color: white;
+
+        input {
+            background: transparent;
             border: none;
+            color: #fff;
+            font-size: 36px;
+            width: 100%;
+            padding: 15px;
+            outline: none;
+            font-weight: 300;
         }
+
+        select {
+            background: #2c2c2e;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-right: 10px;
+            outline: none;
+            font-weight: 600;
+            appearance: none; /* Убираем стандартную стрелку */
+            -webkit-appearance: none;
+        }
+
+        /* Список валют */
+        .result-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .result-item {
+            background: rgba(44, 44, 46, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .flag { font-size: 24px; margin-right: 10px; }
+        
+        .currency-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .currency-code { font-weight: 600; font-size: 17px; }
+        .currency-name { font-size: 12px; color: #8e8e93; }
+
+        .currency-value {
+            font-size: 20px;
+            font-weight: 500;
+            color: #32d74b;
+        }
+
+        /* Анимация загрузки */
+        .loading { opacity: 0.5; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Аватар" class="avatar">
-        
-        <h1>Ivan Ska</h1>
-        
-        <p>Разработчик. Создаю расширения и ботов.</p>
+    <header>
+        <h2>Финансы</h2>
+        <div id="status" class="status-badge">Обновление...</div>
+    </header>
 
-        <a href="https://t.me/ваш_ник" class="btn">Telegram</a>
-        <a href="https://github.com/hateua" class="btn">GitHub</a>
-        
-        <a href="#" class="btn btn-highlight">Мой проект для Threads</a>
+    <div class="converter-box">
+        <div class="input-container">
+            <input type="number" id="amount" value="100" inputmode="decimal" placeholder="0">
+            <select id="baseCurrency">
+                <option value="UAH">🇺🇦 UAH</option>
+                <option value="USD">🇺🇸 USD</option>
+                <option value="EUR">🇪🇺 EUR</option>
+                <option value="PLN">🇵🇱 PLN</option>
+                <option value="CZK">🇨🇿 CZK</option>
+            </select>
+        </div>
+
+        <div id="results" class="result-list">
+            </div>
     </div>
+
+    <script>
+        // Список валют для отображения
+        const TARGETS = [
+            { code: 'USD', name: 'Доллар США', flag: '🇺🇸' },
+            { code: 'EUR', name: 'Евро', flag: '🇪🇺' },
+            { code: 'PLN', name: 'Злотый', flag: '🇵🇱' },
+            { code: 'CZK', name: 'Чешская Крона', flag: '🇨🇿' },
+            { code: 'UAH', name: 'Гривна', flag: '🇺🇦' }
+        ];
+
+        const amountInput = document.getElementById('amount');
+        const baseSelect = document.getElementById('baseCurrency');
+        const resultsContainer = document.getElementById('results');
+        const statusBadge = document.getElementById('status');
+        
+        let currentRates = {}; // Здесь будем хранить скачанные курсы
+
+        // 1. Функция получения курсов из интернета
+        async function fetchRates() {
+            const base = baseSelect.value;
+            statusBadge.innerText = 'Загрузка курсов...';
+            resultsContainer.classList.add('loading');
+
+            try {
+                // Если выбрана UAH, используем трюк (API не дает UAH как базу, но дает как цель)
+                // Поэтому берем базу EUR и пересчитываем математически
+                let url = `https://api.frankfurter.app/latest?from=EUR`; 
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!data || !data.rates) throw new Error('Ошибка API');
+
+                // Добавляем EUR в список рейтов (так как он база)
+                data.rates['EUR'] = 1;
+
+                // Пересчитываем все курсы относительно выбранной пользователем базы
+                const baseRate = data.rates[base]; // Сколько стоит 1 EUR в выбранной валюте
+                
+                // Создаем "правильные" курсы, где 1 Unit выбранной валюты = X других
+                TARGETS.forEach(t => {
+                    const targetRate = data.rates[t.code];
+                    currentRates[t.code] = targetRate / baseRate;
+                });
+
+                statusBadge.innerText = 'Курс ЦБ актуален';
+                statusBadge.style.color = '#32d74b';
+                calculate(); // Сразу считаем цифры
+
+            } catch (error) {
+                console.error(error);
+                statusBadge.innerText = 'Ошибка сети';
+                statusBadge.style.color = 'red';
+            } finally {
+                resultsContainer.classList.remove('loading');
+            }
+        }
+
+        // 2. Функция математического подсчета (без интернета)
+        function calculate() {
+            const amount = parseFloat(amountInput.value);
+            const base = baseSelect.value;
+            
+            resultsContainer.innerHTML = ''; // Очищаем список
+
+            if (isNaN(amount)) return;
+
+            TARGETS.forEach(currency => {
+                // Не показываем саму себя в списке
+                if (currency.code === base) return;
+
+                const rate = currentRates[currency.code];
+                const total = (amount * rate).toFixed(2); // Округляем до копеек
+
+                // Создаем красивую плашку
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <div style="display:flex; align-items:center;">
+                        <span class="flag">${currency.flag}</span>
+                        <div class="currency-info">
+                            <span class="currency-code">${currency.code}</span>
+                            <span class="currency-name">${currency.name}</span>
+                        </div>
+                    </div>
+                    <span class="currency-value">${total}</span>
+                `;
+                resultsContainer.appendChild(div);
+            });
+        }
+
+        // Слушаем изменения
+        amountInput.addEventListener('input', calculate); // Когда печатаем цифры
+        baseSelect.addEventListener('change', fetchRates); // Когда меняем валюту
+
+        // Запуск при старте
+        fetchRates();
+    </script>
 
 </body>
 </html>
