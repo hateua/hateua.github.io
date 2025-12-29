@@ -4,26 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
+    <meta name="apple-mobile-web-app-title" content="🤑">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Rates">
     
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&length=1&size=512&font-size=0.7">
-    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&length=1&size=512&font-size=0.7">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/500/000000/us-dollar-circled--v1.png">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&length=1&size=512&font-size=0.6&rounded=false">
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&length=1&size=512&font-size=0.6&rounded=false">
 
-    <title>Black Rates</title>
+    <title>🤑</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
             background-color: #000;
             color: white;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: env(safe-area-inset-top);
+            /* Учитываем "чёлку" и безопасные зоны iPhone */
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-bottom: env(safe-area-inset-bottom);
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -34,14 +38,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 25px;
-            margin-bottom: 25px;
+            margin-top: 10px;
+            margin-bottom: 20px;
         }
 
         h2 { 
             margin: 0; 
-            font-weight: 700; 
-            font-size: 24px; 
+            font-weight: 800; 
+            font-size: 28px; 
             letter-spacing: -0.5px;
         }
 
@@ -52,7 +56,7 @@
             background-color: #333;
             border-radius: 50%;
             display: inline-block;
-            transition: 0.3s;
+            transition: 0.5s;
         }
 
         .converter-box { width: 90%; max-width: 400px; }
@@ -61,29 +65,32 @@
         .input-wrapper {
             background: #1c1c1e;
             border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 30px;
+            padding: 15px;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            /* Легкая тень для объема */
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         input {
             background: transparent;
             border: none;
             color: #fff;
-            font-size: 40px;
+            font-size: 36px;
             width: 60%;
-            padding: 5px 10px;
+            padding: 5px;
             outline: none;
             font-weight: 400;
         }
 
         .select-wrapper {
             background: #2c2c2e;
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 8px 12px;
-            margin-right: 5px;
+            display: flex;
+            align-items: center;
         }
 
         select {
@@ -95,35 +102,37 @@
             outline: none;
             appearance: none;
             -webkit-appearance: none;
+            text-align: right;
         }
 
-        /* Список валют */
+        /* Результаты */
         .result-list {
             display: flex;
             flex-direction: column;
-            gap: 15px; /* Чуть больше воздуха между строками */
+            gap: 12px;
+            padding-bottom: 30px; /* Отступ снизу для скролла */
         }
 
         .result-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 5px 0;
+            padding: 12px 5px;
             border-bottom: 1px solid #1a1a1a;
         }
 
-        .flag-icon { font-size: 28px; margin-right: 15px; }
+        .flag-icon { font-size: 32px; margin-right: 15px; }
         
         .currency-meta {
             display: flex;
             flex-direction: column;
         }
         
-        .code { font-weight: 600; font-size: 17px; letter-spacing: 0.5px; }
-        .name { font-size: 13px; color: #555; margin-top: 3px; }
+        .code { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
+        .name { font-size: 13px; color: #555; margin-top: 2px; }
 
         .value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 500;
             color: #f2f2f7;
             font-feature-settings: "tnum";
@@ -133,7 +142,7 @@
 <body>
 
     <header>
-        <h2>Курсы Валют</h2>
+        <h2>Обмен Валют</h2>
         <div id="status" class="status-dot"></div>
     </header>
 
@@ -155,13 +164,13 @@
     </div>
 
     <script>
-        // Список валют
+        // СПИСОК ВАЛЮТ
         const TARGETS = [
-            { code: 'USD', name: 'США', flag: '🇺🇸' },
-            { code: 'EUR', name: 'Европа', flag: '🇪🇺' },
-            { code: 'PLN', name: 'Польша', flag: '🇵🇱' },
-            { code: 'CZK', name: 'Чехия', flag: '🇨🇿' },
-            { code: 'UAH', name: 'Украина', flag: '🇺🇦' }
+            { code: 'USD', name: 'Dollar', flag: '🇺🇸' },
+            { code: 'EUR', name: 'Euro', flag: '🇪🇺' },
+            { code: 'PLN', name: 'Zloty', flag: '🇵🇱' },
+            { code: 'CZK', name: 'Koruna', flag: '🇨🇿' },
+            { code: 'UAH', name: 'Hryvnia', flag: '🇺🇦' }
         ];
 
         const amountInput = document.getElementById('amount');
@@ -171,9 +180,12 @@
         
         let ratesData = {}; 
 
+        // Загрузка курсов (Обновлено: Open Exchange Rates - надежный источник)
         async function fetchRates() {
             try {
-                // Берем курсы относительно USD
+                // Ставим желтый цвет пока грузим
+                statusDot.style.backgroundColor = '#ffcc00';
+
                 const response = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await response.json();
                 
@@ -181,14 +193,14 @@
 
                 ratesData = data.rates;
                 
-                // Зеленый индикатор - успех
+                // Зеленый цвет - успех
                 statusDot.style.backgroundColor = '#30d158';
-                statusDot.style.boxShadow = '0 0 10px #30d158';
+                statusDot.style.boxShadow = '0 0 15px #30d158'; // Неоновое свечение
                 
                 calculate();
             } catch (error) {
                 console.error(error);
-                // Красный индикатор - ошибка
+                // Красный цвет - ошибка
                 statusDot.style.backgroundColor = '#ff453a';
             }
         }
@@ -209,7 +221,7 @@
                 const targetRate = ratesData[currency.code];
                 const result = (amount / baseRate) * targetRate;
 
-                // Форматирование: разделение тысяч пробелами
+                // Форматирование: 12 500.00
                 let formatted = result.toLocaleString('ru-RU', {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2
@@ -231,9 +243,16 @@
             });
         }
 
+        // Слушатели событий
         amountInput.addEventListener('input', calculate);
         baseSelect.addEventListener('change', calculate);
+        
+        // Фокус на поле ввода при клике на блок
+        document.querySelector('.input-wrapper').addEventListener('click', () => {
+            amountInput.focus();
+        });
 
+        // Запуск
         fetchRates();
     </script>
 
