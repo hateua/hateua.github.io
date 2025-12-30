@@ -4,21 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <meta name="apple-mobile-web-app-title" content="🤑">
+    <meta name="apple-mobile-web-app-title" content="Курс валют">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <link rel="apple-touch-icon" href="https://img.icons8.com/ios-filled/500/000000/us-dollar-circled--v1.png">
-    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&length=1&size=512&font-size=0.6&rounded=false">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=$&background=000000&color=00ff00&font-size=0.8&rounded=false">
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=$&background=000000&color=00ff00&font-size=0.8&rounded=false">
 
-    <title>Курс 🤑</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <title>Pixel Rates</title>
     <style>
+        /* PIXEL ART STYLES */
+        :root {
+            --bg: #000000;
+            --main: #ffffff;
+            --accent: #00ff00; /* Retro Green */
+            --dim: #555555;
+            --border: 4px solid var(--main);
+        }
+
         body {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-            background-color: #000;
-            color: white;
+            font-family: 'Press Start 2P', cursive; /* Пиксельный шрифт */
+            background-color: var(--bg);
+            color: var(--main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -26,201 +37,325 @@
             padding-top: max(20px, env(safe-area-inset-top));
             padding-bottom: env(safe-area-inset-bottom);
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
+        /* СНЕГ */
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 10px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 0;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh); }
+        }
+
+        /* ЭКРАН ЗАГРУЗКИ */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-text {
+            color: var(--accent);
+            font-size: 20px;
+            animation: blink 0.5s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* ОСНОВНОЙ ИНТЕРФЕЙС */
         header {
             width: 90%;
-            max-width: 400px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            max-width: 450px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            z-index: 10;
         }
 
         h2 { 
             margin: 0; 
-            font-weight: 800; 
-            font-size: 28px; 
-            letter-spacing: -0.5px;
+            font-size: 20px; 
+            text-transform: uppercase;
+            color: var(--accent);
+            text-shadow: 2px 2px 0px #fff;
+            line-height: 1.5;
         }
 
-        .status-dot {
-            height: 8px;
-            width: 8px;
-            background-color: #333;
-            border-radius: 50%;
-            display: inline-block;
-            transition: 0.5s;
+        .converter-box { 
+            width: 85%; 
+            max-width: 450px; 
+            z-index: 10;
         }
-
-        .converter-box { width: 90%; max-width: 400px; }
 
         /* Поле ввода */
         .input-wrapper {
-            background: #1c1c1e;
-            border-radius: 20px;
+            background: #000;
+            border: 4px solid var(--main);
             padding: 15px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
+            box-shadow: 8px 8px 0px var(--dim); /* Жесткая тень */
         }
 
         input {
             background: transparent;
             border: none;
-            color: #fff;
-            font-size: 36px;
+            color: var(--accent);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 20px;
             width: 55%;
-            padding: 5px;
             outline: none;
-            font-weight: 400;
         }
 
         .select-wrapper {
-            background: #2c2c2e;
-            border-radius: 12px;
-            padding: 8px 12px;
-            display: flex;
-            align-items: center;
             position: relative;
         }
-        
-        /* Стрелочка вниз для красоты */
+
         .select-wrapper::after {
             content: '▼';
             font-size: 10px;
-            color: #888;
-            margin-left: 8px;
+            color: var(--main);
+            position: absolute;
+            right: 0;
+            top: 5px;
+            pointer-events: none;
         }
 
         select {
             background: transparent;
             border: none;
-            color: #fff;
-            font-size: 20px;
-            font-weight: 600;
+            color: var(--main);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
             outline: none;
             appearance: none;
             -webkit-appearance: none;
-            text-align: right;
-            padding-right: 5px;
+            padding-right: 20px;
         }
 
+        /* Результаты */
         .result-list {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding-bottom: 30px;
+            gap: 20px;
+            padding-bottom: 50px;
         }
 
         .result-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 10px;
-            border-bottom: 1px solid #1a1a1a;
-            border-radius: 10px;
-            transition: background 0.2s;
-            cursor: pointer; /* Показывает что можно нажать */
+            padding: 15px;
+            border: 2px solid var(--dim);
+            background: #111;
+            cursor: pointer;
+            transition: 0.1s;
         }
 
-        /* Эффект при нажатии */
         .result-item:active {
-            background-color: #1c1c1e;
-            transform: scale(0.98);
+            transform: translate(2px, 2px);
+            border-color: var(--accent);
         }
 
-        .flag-icon { font-size: 32px; margin-right: 15px; }
-        
-        .currency-meta {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .code { font-weight: 700; font-size: 18px; letter-spacing: 0.5px; }
-        .name { font-size: 13px; color: #555; margin-top: 2px; }
+        .currency-left { display: flex; align-items: center; }
+        .flag-icon { font-size: 20px; margin-right: 15px; }
+        .code { font-size: 14px; color: var(--main); }
+        .value { font-size: 14px; color: var(--accent); }
 
-        .value {
-            font-size: 24px;
-            font-weight: 500;
-            color: #f2f2f7;
-            font-feature-settings: "tnum";
-        }
-        
-        /* Подсказка */
         .hint {
             text-align: center;
-            color: #444;
-            font-size: 12px;
-            margin-top: -10px;
+            font-size: 10px;
+            color: var(--dim);
             margin-bottom: 20px;
+            margin-top: -10px;
+            text-transform: uppercase;
         }
+        
+        .update-time {
+            font-size: 8px;
+            color: var(--dim);
+            margin-top: 10px;
+            text-align: center;
+        }
+
     </style>
 </head>
 <body>
 
+    <div id="loader">
+        <div class="loading-text">LOADING...</div>
+        <div style="margin-top: 20px; font-size: 10px;">SYSTEM CHECK</div>
+    </div>
+
+    <div id="snow-container"></div>
+
     <header>
-        <h2>Обмен Валют</h2>
-        <div id="status" class="status-dot"></div>
+        <h2 id="app-title">PIXEL RATES</h2>
     </header>
 
     <div class="converter-box">
         <div class="input-wrapper">
-            <input type="number" id="amount" value="100" inputmode="decimal" placeholder="0">
+            <input type="number" id="amount" value="100" inputmode="decimal">
             <div class="select-wrapper">
                 <select id="baseCurrency">
-                    <option value="UAH">UAH 🇺🇦</option>
-                    <option value="USD">USD 🇺🇸</option>
-                    <option value="EUR">EUR 🇪🇺</option>
-                    <option value="PLN">PLN 🇵🇱</option>
-                    <option value="CZK">CZK 🇨🇿</option>
+                    <option value="UAH">UAH</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="PLN">PLN</option>
+                    <option value="CZK">CZK</option>
                 </select>
             </div>
         </div>
 
-        <p class="hint">Нажми на валюту снизу, чтобы выбрать её</p>
+        <p class="hint" id="hint-text">TAP TO SWAP</p>
 
         <div id="results" class="result-list"></div>
+        <div id="last-update" class="update-time"></div>
     </div>
 
     <script>
-        const TARGETS = [
-            { code: 'USD', name: 'Dollar', flag: '🇺🇸' },
-            { code: 'EUR', name: 'Euro', flag: '🇪🇺' },
-            { code: 'PLN', name: 'Zloty', flag: '🇵🇱' },
-            { code: 'CZK', name: 'Koruna', flag: '🇨🇿' },
-            { code: 'UAH', name: 'Hryvnia', flag: '🇺🇦' }
-        ];
+        // --- 1. ТЕКСТЫ И ПЕРЕВОД ---
+        const TEXTS = {
+            ru: { title: "КУРСЫ ВАЛЮТ", hint: "НАЖМИ ДЛЯ ВЫБОРА", loading: "ЗАГРУЗКА..." },
+            en: { title: "PIXEL RATES", hint: "TAP TO SWAP", loading: "LOADING..." },
+            ua: { title: "КУРС ВАЛЮТ", hint: "НАТИСНИ ДЛЯ ВИБОРУ", loading: "ЗАВАНТАЖЕННЯ..." }
+        };
 
+        // --- 2. НАСТРОЙКИ ---
+        const TARGETS = [
+            { code: 'USD', flag: '🇺🇸' },
+            { code: 'EUR', flag: '🇪🇺' },
+            { code: 'PLN', flag: '🇵🇱' },
+            { code: 'CZK', flag: '🇨🇿' },
+            { code: 'UAH', flag: '🇺🇦' }
+        ];
+        
+        // --- 3. СНЕГ ---
+        function createSnow() {
+            const container = document.getElementById('snow-container');
+            const w = window.innerWidth;
+            
+            setInterval(() => {
+                const flake = document.createElement('div');
+                flake.classList.add('snowflake');
+                // Пиксельный снег - это просто квадратные точки
+                flake.innerText = '■'; 
+                flake.style.left = Math.random() * w + 'px';
+                flake.style.opacity = Math.random();
+                flake.style.fontSize = (Math.random() * 5 + 5) + 'px'; // Размер 5-10px
+                
+                // Скорость падения (3-8 секунд)
+                const duration = Math.random() * 5 + 3;
+                flake.style.animationDuration = duration + 's';
+                
+                container.appendChild(flake);
+                
+                // Удаляем упавшие
+                setTimeout(() => flake.remove(), duration * 1000);
+            }, 300); // Частота создания
+        }
+
+        // --- 4. ЛОГИКА ---
         const amountInput = document.getElementById('amount');
         const baseSelect = document.getElementById('baseCurrency');
         const resultsContainer = document.getElementById('results');
-        const statusDot = document.getElementById('status');
-        
+        const loader = document.getElementById('loader');
+        const loaderText = document.querySelector('.loading-text');
+
         let ratesData = {}; 
 
+        // Авто-определение языка и страны
+        function autoDetect() {
+            const lang = navigator.language || navigator.userLanguage;
+            let currentLang = 'en';
+            
+            // Простая логика
+            if (lang.includes('ru')) {
+                currentLang = 'ru';
+                baseSelect.value = 'UAH'; // Если рус/укр интерфейс, скорее всего нужна UAH
+            } else if (lang.includes('ua') || lang.includes('uk')) {
+                currentLang = 'ua';
+                baseSelect.value = 'UAH';
+            } else if (lang.includes('pl')) {
+                baseSelect.value = 'PLN';
+            } else {
+                baseSelect.value = 'USD';
+            }
+
+            // Перевод интерфейса
+            document.getElementById('app-title').innerText = TEXTS[currentLang].title;
+            document.getElementById('hint-text').innerText = TEXTS[currentLang].hint;
+            loaderText.innerText = TEXTS[currentLang].loading;
+        }
+
+        // Кэширование (24 часа)
         async function fetchRates() {
-            try {
-                statusDot.style.backgroundColor = '#ffcc00';
+            const CACHE_KEY = 'pixel_rates_cache';
+            const ONE_DAY = 24 * 60 * 60 * 1000;
+            
+            // Проверяем кэш
+            const cached = localStorage.getItem(CACHE_KEY);
+            let useCache = false;
 
-                const response = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await response.json();
-                
-                if (!data || !data.rates) throw new Error('API Error');
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                const now = Date.now();
+                // Если данные моложе 24 часов
+                if (now - parsed.timestamp < ONE_DAY) {
+                    console.log('Using Cache');
+                    ratesData = parsed.rates;
+                    document.getElementById('last-update').innerText = 'CACHED DATA';
+                    useCache = true;
+                    // Имитируем загрузку для красоты
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        calculate();
+                    }, 1500); 
+                }
+            }
 
-                ratesData = data.rates;
-                
-                statusDot.style.backgroundColor = '#30d158';
-                statusDot.style.boxShadow = '0 0 15px #30d158';
-                
-                calculate();
-            } catch (error) {
-                console.error(error);
-                statusDot.style.backgroundColor = '#ff453a';
+            if (!useCache) {
+                try {
+                    console.log('Fetching New Data');
+                    const response = await fetch('https://open.er-api.com/v6/latest/USD');
+                    const data = await response.json();
+                    
+                    if (!data || !data.rates) throw new Error('API Error');
+
+                    ratesData = data.rates;
+                    
+                    // Сохраняем в память
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: Date.now(),
+                        rates: ratesData
+                    }));
+
+                    document.getElementById('last-update').innerText = 'UPDATED JUST NOW';
+
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        calculate();
+                    }, 2000); // 2 сек красивой загрузки
+
+                } catch (error) {
+                    console.error(error);
+                    loaderText.innerText = "ERROR :(";
+                    loaderText.style.color = "red";
+                }
             }
         }
 
@@ -247,16 +382,15 @@
 
                 const div = document.createElement('div');
                 div.className = 'result-item';
-                // Добавляем функцию клика для смены валюты
-                div.onclick = function() { swapCurrency(currency.code); };
+                div.onclick = function() { 
+                    baseSelect.value = currency.code;
+                    calculate();
+                };
                 
                 div.innerHTML = `
-                    <div style="display:flex; align-items:center;">
+                    <div class="currency-left">
                         <span class="flag-icon">${currency.flag}</span>
-                        <div class="currency-meta">
-                            <span class="code">${currency.code}</span>
-                            <span class="name">${currency.name}</span>
-                        </div>
+                        <span class="code">${currency.code}</span>
                     </div>
                     <span class="value">${formatted}</span>
                 `;
@@ -264,24 +398,15 @@
             });
         }
 
-        // Новая функция: меняет главную валюту при клике
-        function swapCurrency(newCode) {
-            baseSelect.value = newCode; // Меняем список сверху
-            calculate(); // Пересчитываем
-            
-            // Легкая вибрация на телефоне (если поддерживается)
-            if (navigator.vibrate) navigator.vibrate(20);
-        }
+        // Запуск
+        createSnow();
+        autoDetect();
+        fetchRates();
 
         amountInput.addEventListener('input', calculate);
         baseSelect.addEventListener('change', calculate);
-        
-        document.querySelector('.input-wrapper').addEventListener('click', () => {
-            amountInput.focus();
-        });
+        document.querySelector('.input-wrapper').addEventListener('click', () => amountInput.focus());
 
-        fetchRates();
     </script>
-
 </body>
 </html>
