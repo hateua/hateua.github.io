@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThreadsAI Auto-Bot [Pro]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ThreadsAI Bot — Автоматизация</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
 
@@ -14,6 +14,7 @@
             --text-gray: #888888;
             --border: #333333;
             --accent: #ffffff;
+            --btn-hover: #cccccc;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,6 +25,7 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* === СНЕГ === */
@@ -47,41 +49,63 @@
         /* === HERO SECTION === */
         header {
             text-align: center;
-            padding: 100px 0 60px;
+            padding: 120px 0 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 900;
             letter-spacing: -2px;
             margin-bottom: 20px;
             text-transform: uppercase;
+            line-height: 1.1;
         }
 
         .subtitle {
             font-size: 1.2rem;
             color: var(--text-gray);
             max-width: 600px;
-            margin: 0 auto 40px;
+            margin: 0 auto 30px;
             font-weight: 300;
         }
 
+        /* Блок про бесплатную версию */
+        .free-info {
+            font-size: 0.9rem;
+            color: #aaa;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-bottom: 30px;
+            border: 1px solid #222;
+            display: inline-block;
+        }
+
+        /* === BUTTONS === */
         .btn-group {
             display: flex;
             gap: 15px;
             justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
         }
 
         .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            border-radius: 6px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 32px;
+            border-radius: 8px;
             font-weight: 700;
             text-decoration: none;
             transition: all 0.3s ease;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            white-space: nowrap;
         }
 
         .btn-white {
@@ -90,19 +114,21 @@
             border: 1px solid #fff;
         }
         .btn-white:hover {
-            background: #ccc;
-            border-color: #ccc;
+            background: var(--btn-hover);
+            border-color: var(--btn-hover);
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
         }
 
         .btn-outline {
             background: transparent;
             color: #fff;
-            border: 1px solid #333;
+            border: 1px solid #444;
         }
         .btn-outline:hover {
             border-color: #fff;
             background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
         }
 
         /* === GRID === */
@@ -122,37 +148,13 @@
         }
 
         .card:hover {
-            border-color: #555;
+            border-color: #666;
             transform: translateY(-5px);
         }
 
         .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
-        .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; color: #fff; }
         .card p { font-size: 0.9rem; color: var(--text-gray); }
-
-        /* === HOW IT WORKS === */
-        .steps {
-            border-top: 1px dashed var(--border);
-            padding: 60px 0;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 40px;
-        }
-        .step-list {
-            list-style: none;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        .step-list li {
-            margin-bottom: 15px;
-            padding-left: 20px;
-            border-left: 2px solid var(--border);
-            color: var(--text-gray);
-        }
-        .step-list li strong { color: #fff; }
 
         /* === FOOTER === */
         footer {
@@ -161,12 +163,37 @@
             border-top: 1px solid var(--border);
             color: var(--text-gray);
             font-size: 12px;
+            margin-top: 40px;
         }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            .btn-group { flex-direction: column; }
-            .btn { width: 100%; text-align: center; }
+        /* === MOBILE ADAPTATION === */
+        @media (max-width: 768px) {
+            header { padding: 60px 0 40px; }
+            h1 { font-size: 2.5rem; letter-spacing: -1px; }
+            .subtitle { font-size: 1rem; }
+            
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 400px;
+            }
+            .btn {
+                width: 100%;
+                padding: 14px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr; /* Одна колонка на телефоне */
+                gap: 15px;
+                margin: 40px 0;
+            }
+            
+            .free-info {
+                font-size: 0.8rem;
+                padding: 10px;
+                line-height: 1.4;
+                border-radius: 12px;
+            }
         }
     </style>
 </head>
@@ -177,24 +204,28 @@
     <div class="container">
         <header>
             <h1>ThreadsAI Bot</h1>
-            <p class="subtitle">Ультимативный инструмент для органического роста. Искусственный интеллект, авто-постинг фото и полная автоматизация.</p>
+            <p class="subtitle">Умная автоматизация вашего аккаунта. Искусственный интеллект, авто-постинг фото и полная безопасность.</p>
             
+            <div class="free-info">
+                ℹ️ <b>Free Версия:</b> Вы можете добавить свои ответы вручную и запустить бота без PRO функций.
+            </div>
+
             <div class="btn-group">
-                <a href="https://t.me/threadsget" class="btn btn-white">Купить PRO</a>
-                <a href="#features" class="btn btn-outline">Узнать больше</a>
+                <a href="https://t.me/threadsget" target="_blank" class="btn btn-white">Купить PRO</a>
+                <a href="https://t.me/freethreadss" target="_blank" class="btn btn-outline">Скачать Бесплатно</a>
             </div>
         </header>
 
         <section id="features" class="features">
             <div class="card">
                 <span class="icon">🧠</span>
-                <h3>Искусственный Интеллект</h3>
-                <p>Не просто кликер. Бот читает посты и генерирует осмысленные ответы на языке автора (GPT-4o).</p>
+                <h3>Искусственный Интеллект (PRO)</h3>
+                <p>Бот читает пост и генерирует осмысленный ответ на языке автора. Вы задаете характер общения.</p>
             </div>
             <div class="card">
                 <span class="icon">📸</span>
-                <h3>Визуальный Спам</h3>
-                <p>Загружайте свои фото (мемы, рекламу), и бот будет прикреплять их к комментариям.</p>
+                <h3>Визуальный Спам (PRO)</h3>
+                <p>Загружайте свои фото, и бот будет прикреплять их к комментариям автоматически.</p>
             </div>
             <div class="card">
                 <span class="icon">🛡️</span>
@@ -204,34 +235,23 @@
             <div class="card">
                 <span class="icon">🎯</span>
                 <h3>Таргетинг</h3>
-                <p>Работайте только с целевой аудиторией. Фильтр по ключевым словам (крипта, бизнес, IT).</p>
+                <p>Фильтр по ключевым словам. Бот будет работать только с постами по вашей теме (крипта, бизнес, услуги).</p>
             </div>
             <div class="card">
                 <span class="icon">⚙️</span>
                 <h3>Гибкая настройка</h3>
-                <p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Задавайте свой промпт для AI.</p>
+                <p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Полный контроль над лимитами.</p>
             </div>
             <div class="card">
-                <span class="icon">💬</span>
-                <h3>Free & Pro</h3>
-                <p>Работает бесплатно с базовыми фразами. PRO открывает мощь нейросетей и фото-режим.</p>
+                <span class="icon">🎁</span>
+                <h3>Free Режим</h3>
+                <p>Даже без оплаты бот работает: использует ваши заготовленные фразы и ставит лайки.</p>
             </div>
-        </section>
-
-        <section class="steps">
-            <h2 class="section-title">Как это работает?</h2>
-            <ul class="step-list">
-                <li><strong>1. Запуск:</strong> Вы открываете расширение на сайте Threads.net.</li>
-                <li><strong>2. Сканирование:</strong> Бот ищет посты, пропуская политику и негатив.</li>
-                <li><strong>3. Реакция:</strong> Ставит лайк и пишет комментарий (или шлет фото).</li>
-                <li><strong>4. Имитация:</strong> Печатает текст как человек, делает паузы.</li>
-                <li><strong>5. Результат:</strong> Вы получаете живой трафик на профиль 24/7.</li>
-            </ul>
         </section>
 
         <footer>
             &copy; 2025 ThreadsAI. Все права защищены.<br>
-            Designed for Growth.
+            Designed for Efficacy.
         </footer>
     </div>
 
@@ -244,14 +264,14 @@
                 height = canvas.height = window.innerHeight,
                 particles = [];
 
-            var snowflakeCount = 80; // Количество снежинок
+            var snowflakeCount = window.innerWidth < 600 ? 40 : 80; // Меньше снега на телефоне
 
             function init() {
                 for(var i = 0; i < snowflakeCount; i++) {
                     particles.push({
                         x: Math.random() * width,
                         y: Math.random() * height,
-                        r: Math.random() * 2 + 1, // Размер от 1 до 3px
+                        r: Math.random() * 2 + 1,
                         d: Math.random() * snowflakeCount
                     })
                 }
@@ -259,7 +279,7 @@
 
             function draw() {
                 ctx.clearRect(0, 0, width, height);
-                ctx.fillStyle = "rgba(255, 255, 255, 0.4)"; // Полупрозрачный белый
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
                 ctx.beginPath();
                 for(var i = 0; i < snowflakeCount; i++) {
                     var p = particles[i];
@@ -273,8 +293,8 @@
             function update() {
                 for(var i = 0; i < snowflakeCount; i++) {
                     var p = particles[i];
-                    p.y += Math.cos(p.d) + 1 + p.r / 2; // Скорость падения
-                    p.x += Math.sin(0) * 0.5; // Легкое смещение
+                    p.y += Math.cos(p.d) + 1 + p.r / 2;
+                    p.x += Math.sin(0) * 0.5;
 
                     if(p.x > width + 5 || p.x < -5 || p.y > height) {
                         particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
@@ -287,6 +307,8 @@
             window.addEventListener('resize', function() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
+                // Пересчет количества снежинок при повороте экрана
+                snowflakeCount = window.innerWidth < 600 ? 40 : 80;
             });
 
             init();
