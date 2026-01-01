@@ -2,280 +2,295 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <meta name="apple-mobile-web-app-title" content="Курс валют">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&font-size=0.8&rounded=false">
-    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=$&background=000000&color=ffffff&font-size=0.8&rounded=false">
-
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-    <title>Курс валют</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreadsAI Auto-Bot [Pro]</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
+
         :root {
-            --bg: #000000;
-            --main-text: #ffffff;
-            --secondary: #aaaaaa;
-            --dim: #555555;
-            --border-style: 4px solid var(--secondary);
+            --bg: #050505;
+            --card-bg: #0a0a0a;
+            --text: #ffffff;
+            --text-gray: #888888;
+            --border: #333333;
+            --accent: #ffffff;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            margin: 0; padding: 0;
-            font-family: 'Press Start 2P', monospace; /* Monospace fallback */
-            background-color: var(--bg); color: var(--main-text);
-            min-height: 100vh;
-            display: flex; flex-direction: column; align-items: center;
-            padding-top: max(20px, env(safe-area-inset-top));
-            padding-bottom: env(safe-area-inset-bottom);
-            -webkit-tap-highlight-color: transparent;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        /* СНЕГ */
-        .snowflake {
-            position: fixed; top: -10px; color: var(--main-text);
-            font-size: 8px; pointer-events: none; z-index: 0;
-            animation: fall linear forwards;
+        /* === СНЕГ === */
+        #snow {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
         }
-        @keyframes fall { to { transform: translateY(110vh); } }
 
-        /* HEADER */
+        /* === CONTAINER === */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* === HERO SECTION === */
         header {
-            width: 90%; max-width: 450px; margin-top: 20px;
-            margin-bottom: 30px; text-align: center; z-index: 10;
-        }
-        h2 { margin: 0; font-size: 16px; text-transform: uppercase; line-height: 1.5; }
-
-        .converter-box { width: 85%; max-width: 450px; z-index: 10; }
-
-        /* INPUT */
-        .input-wrapper {
-            background: #000; border: var(--border-style);
-            padding: 15px; margin-bottom: 30px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 6px 6px 0px var(--dim);
-        }
-        input {
-            background: transparent; border: none; color: var(--main-text);
-            font-family: 'Press Start 2P', monospace; font-size: 18px;
-            width: 55%; outline: none;
+            text-align: center;
+            padding: 100px 0 60px;
         }
 
-        .select-wrapper { position: relative; }
-        .select-wrapper::after {
-            content: '▼'; font-size: 8px; color: var(--secondary);
-            position: absolute; right: 0; top: 6px; pointer-events: none;
-        }
-        select {
-            background: transparent; border: none; color: var(--secondary);
-            font-family: 'Press Start 2P', monospace; font-size: 12px;
-            outline: none; appearance: none; -webkit-appearance: none; padding-right: 20px;
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
         }
 
-        /* LIST */
-        .result-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 50px; }
-
-        .result-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; border: 2px solid var(--secondary); background: #111;
-            cursor: pointer; transition: 0.1s;
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-gray);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            font-weight: 300;
         }
-        .result-item:active { transform: translate(2px, 2px); border-color: var(--main-text); }
 
-        .currency-left { display: flex; align-items: center; }
-        .flag-icon { font-size: 18px; margin-right: 15px; }
-        .code { font-size: 12px; color: var(--secondary); }
-        .value { font-size: 12px; color: var(--main-text); }
-
-        .hint {
-            text-align: center; font-size: 8px; color: var(--dim);
-            margin-bottom: 20px; margin-top: -10px; text-transform: uppercase;
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
         }
-        
-        .debug-info {
-            font-size: 8px; color: #333; text-align: center; margin-top: 20px;
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-white {
+            background: #fff;
+            color: #000;
+            border: 1px solid #fff;
+        }
+        .btn-white:hover {
+            background: #ccc;
+            border-color: #ccc;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-outline:hover {
+            border-color: #fff;
+            background: rgba(255,255,255,0.05);
+        }
+
+        /* === GRID === */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 60px 0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: #555;
+            transform: translateY(-5px);
+        }
+
+        .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
+        .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; }
+        .card p { font-size: 0.9rem; color: var(--text-gray); }
+
+        /* === HOW IT WORKS === */
+        .steps {
+            border-top: 1px dashed var(--border);
+            padding: 60px 0;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+        }
+        .step-list {
+            list-style: none;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .step-list li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            border-left: 2px solid var(--border);
+            color: var(--text-gray);
+        }
+        .step-list li strong { color: #fff; }
+
+        /* === FOOTER === */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-gray);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
         }
     </style>
 </head>
 <body>
 
-    <div id="snow-container"></div>
+    <canvas id="snow"></canvas>
 
-    <header>
-        <h2 id="app-title">PIXEL RATES</h2>
-    </header>
-
-    <div class="converter-box">
-        <div class="input-wrapper">
-            <input type="number" id="amount" value="100" inputmode="decimal">
-            <div class="select-wrapper">
-                <select id="baseCurrency">
-                    <option value="UAH">UAH</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="PLN">PLN</option>
-                    <option value="CZK">CZK</option>
-                    <option value="KZT">KZT</option>
-                </select>
+    <div class="container">
+        <header>
+            <h1>ThreadsAI Bot</h1>
+            <p class="subtitle">Ультимативный инструмент для органического роста. Искусственный интеллект, авто-постинг фото и полная автоматизация.</p>
+            
+            <div class="btn-group">
+                <a href="https://t.me/threadsget" class="btn btn-white">Купить PRO</a>
+                <a href="#features" class="btn btn-outline">Узнать больше</a>
             </div>
-        </div>
+        </header>
 
-        <p class="hint" id="hint-text">TAP TO SWAP</p>
-        
-        <div id="results" class="result-list">
+        <section id="features" class="features">
+            <div class="card">
+                <span class="icon">🧠</span>
+                <h3>Искусственный Интеллект</h3>
+                <p>Не просто кликер. Бот читает посты и генерирует осмысленные ответы на языке автора (GPT-4o).</p>
             </div>
-        
-        <div id="debug-status" class="debug-info">INIT...</div>
+            <div class="card">
+                <span class="icon">📸</span>
+                <h3>Визуальный Спам</h3>
+                <p>Загружайте свои фото (мемы, рекламу), и бот будет прикреплять их к комментариям.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🛡️</span>
+                <h3>Anti-Ban Защита</h3>
+                <p>Умные паузы, имитация ввода человека и авто-обновление страницы каждые 99 действий.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🎯</span>
+                <h3>Таргетинг</h3>
+                <p>Работайте только с целевой аудиторией. Фильтр по ключевым словам (крипта, бизнес, IT).</p>
+            </div>
+            <div class="card">
+                <span class="icon">⚙️</span>
+                <h3>Гибкая настройка</h3>
+                <p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Задавайте свой промпт для AI.</p>
+            </div>
+            <div class="card">
+                <span class="icon">💬</span>
+                <h3>Free & Pro</h3>
+                <p>Работает бесплатно с базовыми фразами. PRO открывает мощь нейросетей и фото-режим.</p>
+            </div>
+        </section>
+
+        <section class="steps">
+            <h2 class="section-title">Как это работает?</h2>
+            <ul class="step-list">
+                <li><strong>1. Запуск:</strong> Вы открываете расширение на сайте Threads.net.</li>
+                <li><strong>2. Сканирование:</strong> Бот ищет посты, пропуская политику и негатив.</li>
+                <li><strong>3. Реакция:</strong> Ставит лайк и пишет комментарий (или шлет фото).</li>
+                <li><strong>4. Имитация:</strong> Печатает текст как человек, делает паузы.</li>
+                <li><strong>5. Результат:</strong> Вы получаете живой трафик на профиль 24/7.</li>
+            </ul>
+        </section>
+
+        <footer>
+            &copy; 2025 ThreadsAI. Все права защищены.<br>
+            Designed for Growth.
+        </footer>
     </div>
 
     <script>
-        // 1. ЗАПАСНЫЕ КУРСЫ (ЧТОБЫ НЕ БЫЛО ПУСТО)
-        // Эти цифры покажутся сразу, если интернет тупит
-        const DEFAULT_RATES = {
-            "USD": 1,
-            "EUR": 0.96,
-            "UAH": 41.8,
-            "PLN": 3.98,
-            "CZK": 23.9,
-            "KZT": 505.0
-        };
+        // Скрипт для снега
+        (function() {
+            var canvas = document.getElementById('snow'),
+                ctx = canvas.getContext('2d'),
+                width = canvas.width = window.innerWidth,
+                height = canvas.height = window.innerHeight,
+                particles = [];
 
-        const TEXTS = {
-            ru: { title: "КУРСЫ ВАЛЮТ", hint: "НАЖМИ ДЛЯ ВЫБОРА" },
-            en: { title: "PIXEL RATES", hint: "TAP TO SWAP" },
-            ua: { title: "КУРС ВАЛЮТ", hint: "НАТИСНИ ДЛЯ ВИБОРУ" },
-            kz: { title: "ВАЛЮТА БАҒАМЫ", hint: "ТАҢДАУ ҮШІН БАСЫҢЫЗ" }
-        };
+            var snowflakeCount = 80; // Количество снежинок
 
-        const TARGETS = [
-            { code: 'USD', flag: '🇺🇸' },
-            { code: 'EUR', flag: '🇪🇺' },
-            { code: 'KZT', flag: '🇰🇿' },
-            { code: 'PLN', flag: '🇵🇱' },
-            { code: 'CZK', flag: '🇨🇿' },
-            { code: 'UAH', flag: '🇺🇦' }
-        ];
-
-        // Элементы
-        const amountInput = document.getElementById('amount');
-        const baseSelect = document.getElementById('baseCurrency');
-        const resultsContainer = document.getElementById('results');
-        const debugStatus = document.getElementById('debug-status');
-
-        // Сразу загружаем дефолтные данные
-        let ratesData = DEFAULT_RATES;
-        debugStatus.innerText = "MODE: OFFLINE (DEFAULT)";
-
-        // Снег
-        function createSnow() {
-            const container = document.getElementById('snow-container');
-            setInterval(() => {
-                const flake = document.createElement('div');
-                flake.classList.add('snowflake');
-                flake.innerText = '■'; 
-                flake.style.left = Math.random() * window.innerWidth + 'px';
-                flake.style.opacity = Math.random() * 0.5; 
-                flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                container.appendChild(flake);
-                setTimeout(() => flake.remove(), 10000);
-            }, 400);
-        }
-
-        // Авто-язык
-        function autoDetect() {
-            try {
-                const lang = (navigator.language || navigator.userLanguage).toLowerCase();
-                let currentLang = 'en';
-                
-                if (lang.includes('kz')) { currentLang = 'kz'; baseSelect.value = 'KZT'; }
-                else if (lang.includes('ru')) { currentLang = 'ru'; if(baseSelect.value !== 'KZT') baseSelect.value = 'UAH'; }
-                else if (lang.includes('ua') || lang.includes('uk')) { currentLang = 'ua'; baseSelect.value = 'UAH'; }
-                else if (lang.includes('pl')) { baseSelect.value = 'PLN'; }
-                else { baseSelect.value = 'USD'; }
-
-                document.getElementById('app-title').innerText = TEXTS[currentLang].title;
-                document.getElementById('hint-text').innerText = TEXTS[currentLang].hint;
-            } catch(e) {}
-        }
-
-        // Логика пересчета
-        function calculate() {
-            const amount = parseFloat(amountInput.value);
-            const base = baseSelect.value;
-            resultsContainer.innerHTML = '';
-            
-            if (!ratesData[base]) {
-                debugStatus.innerText = "ERROR: NO DATA FOR " + base;
-                return;
-            }
-
-            const baseRate = ratesData[base]; 
-
-            TARGETS.forEach(currency => {
-                if (currency.code === base) return;
-
-                // Если вдруг для какой-то валюты нет курса, берем из дефолта
-                const targetRate = ratesData[currency.code] || DEFAULT_RATES[currency.code];
-                const result = (amount / baseRate) * targetRate;
-
-                let fraction = 2;
-                if (currency.code === 'KZT' && result > 100) fraction = 0;
-
-                let formatted = result.toLocaleString('ru-RU', {
-                    minimumFractionDigits: fraction,
-                    maximumFractionDigits: fraction
-                });
-
-                const div = document.createElement('div');
-                div.className = 'result-item';
-                div.onclick = function() { 
-                    baseSelect.value = currency.code;
-                    calculate();
-                };
-                
-                div.innerHTML = `
-                    <div class="currency-left">
-                        <span class="flag-icon">${currency.flag}</span>
-                        <span class="code">${currency.code}</span>
-                    </div>
-                    <span class="value">${formatted}</span>
-                `;
-                resultsContainer.appendChild(div);
-            });
-        }
-
-        // Загрузка из сети
-        async function fetchLiveRates() {
-            try {
-                const response = await fetch('https://open.er-api.com/v6/latest/USD');
-                const data = await response.json();
-                
-                if (data && data.rates) {
-                    ratesData = data.rates;
-                    debugStatus.innerText = "MODE: ONLINE (LIVE)";
-                    debugStatus.style.color = "#00ff00"; // Зеленый текст если ок
-                    calculate(); // Перерисовываем с новыми данными
+            function init() {
+                for(var i = 0; i < snowflakeCount; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        r: Math.random() * 2 + 1, // Размер от 1 до 3px
+                        d: Math.random() * snowflakeCount
+                    })
                 }
-            } catch (error) {
-                console.error("Net Error");
-                // Ничего страшного, у нас уже есть дефолтные данные
             }
-        }
 
-        // ЗАПУСК
-        createSnow();
-        autoDetect();
-        calculate(); // Рисуем сразу дефолт!
-        fetchLiveRates(); // Пытаемся обновить
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)"; // Полупрозрачный белый
+                ctx.beginPath();
+                for(var i = 0; i < snowflakeCount; i++) {
+                    var p = particles[i];
+                    ctx.moveTo(p.x, p.y);
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+                }
+                ctx.fill();
+                update();
+            }
 
-        amountInput.addEventListener('input', calculate);
-        baseSelect.addEventListener('change', calculate);
-        document.querySelector('.input-wrapper').addEventListener('click', () => amountInput.focus());
+            function update() {
+                for(var i = 0; i < snowflakeCount; i++) {
+                    var p = particles[i];
+                    p.y += Math.cos(p.d) + 1 + p.r / 2; // Скорость падения
+                    p.x += Math.sin(0) * 0.5; // Легкое смещение
 
+                    if(p.x > width + 5 || p.x < -5 || p.y > height) {
+                        particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
+                    }
+                }
+            }
+
+            setInterval(draw, 33);
+
+            window.addEventListener('resize', function() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            init();
+        })();
     </script>
 </body>
 </html>
