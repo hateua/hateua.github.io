@@ -15,9 +15,10 @@
             --border: #333333;
             --accent: #ffffff;
             --btn-hover: #cccccc;
+            --partner-color: #9c27b0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
 
         body {
             background-color: var(--bg);
@@ -62,6 +63,8 @@
             margin-bottom: 20px;
             text-transform: uppercase;
             line-height: 1.1;
+            cursor: pointer; /* Секретный клик */
+            user-select: none;
         }
 
         .subtitle {
@@ -72,7 +75,6 @@
             font-weight: 300;
         }
 
-        /* Блок про бесплатную версию */
         .free-info {
             font-size: 0.9rem;
             color: #aaa;
@@ -106,6 +108,8 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             white-space: nowrap;
+            cursor: pointer;
+            border: none;
         }
 
         .btn-white {
@@ -128,6 +132,17 @@
         .btn-outline:hover {
             border-color: #fff;
             background: rgba(255,255,255,0.05);
+            transform: translateY(-2px);
+        }
+
+        .btn-partner {
+            background: var(--partner-color);
+            color: #fff;
+            border: 1px solid var(--partner-color);
+            box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
+        }
+        .btn-partner:hover {
+            background: #ba68c8;
             transform: translateY(-2px);
         }
 
@@ -156,6 +171,50 @@
         .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; color: #fff; }
         .card p { font-size: 0.9rem; color: var(--text-gray); }
 
+        /* === MODAL === */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal {
+            background: #111;
+            border: 1px solid #333;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 16px;
+            position: relative;
+            transform: translateY(20px);
+            transition: 0.3s;
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+
+        .close-btn {
+            position: absolute; top: 15px; right: 20px;
+            color: #666; font-size: 24px; cursor: pointer;
+        }
+        .close-btn:hover { color: #fff; }
+
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; color: #888; font-size: 12px; margin-bottom: 5px; }
+        .form-group input {
+            width: 100%; padding: 12px;
+            background: #000; border: 1px solid #333;
+            color: #fff; border-radius: 8px; font-family: inherit;
+        }
+        .form-group input:focus { border-color: var(--partner-color); }
+
         /* === FOOTER === */
         footer {
             text-align: center;
@@ -183,7 +242,7 @@
             }
             
             .features {
-                grid-template-columns: 1fr; /* Одна колонка на телефоне */
+                grid-template-columns: 1fr;
                 gap: 15px;
                 margin: 40px 0;
             }
@@ -203,7 +262,7 @@
 
     <div class="container">
         <header>
-            <h1>ThreadsAI Bot</h1>
+            <h1 id="secretLogo">ThreadsAI Bot</h1>
             <p class="subtitle">Умная автоматизация вашего аккаунта. Искусственный интеллект, авто-постинг фото и полная безопасность.</p>
             
             <div class="free-info">
@@ -213,40 +272,17 @@
             <div class="btn-group">
                 <a href="https://t.me/threadsget" target="_blank" class="btn btn-white">Купить PRO</a>
                 <a href="https://t.me/freethreadss" target="_blank" class="btn btn-outline">Скачать Бесплатно</a>
+                <button id="openPartner" class="btn btn-partner">🔥 Стать Партнером</button>
             </div>
         </header>
 
-        <section id="features" class="features">
-            <div class="card">
-                <span class="icon">🧠</span>
-                <h3>Искусственный Интеллект (PRO)</h3>
-                <p>Бот читает пост и генерирует осмысленный ответ на языке автора. Вы задаете характер общения.</p>
-            </div>
-            <div class="card">
-                <span class="icon">📸</span>
-                <h3>Визуальный Спам (PRO)</h3>
-                <p>Загружайте свои фото, и бот будет прикреплять их к комментариям автоматически.</p>
-            </div>
-            <div class="card">
-                <span class="icon">🛡️</span>
-                <h3>Anti-Ban Защита</h3>
-                <p>Умные паузы, имитация ввода человека и авто-обновление страницы каждые 99 действий.</p>
-            </div>
-            <div class="card">
-                <span class="icon">🎯</span>
-                <h3>Таргетинг</h3>
-                <p>Фильтр по ключевым словам. Бот будет работать только с постами по вашей теме (крипта, бизнес, услуги).</p>
-            </div>
-            <div class="card">
-                <span class="icon">⚙️</span>
-                <h3>Гибкая настройка</h3>
-                <p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Полный контроль над лимитами.</p>
-            </div>
-            <div class="card">
-                <span class="icon">🎁</span>
-                <h3>Free Режим</h3>
-                <p>Даже без оплаты бот работает: использует ваши заготовленные фразы и ставит лайки.</p>
-            </div>
+        <section class="features">
+            <div class="card"><span class="icon">🧠</span><h3>Искусственный Интеллект (PRO)</h3><p>Бот читает пост и генерирует осмысленный ответ на языке автора. Вы задаете характер общения.</p></div>
+            <div class="card"><span class="icon">📸</span><h3>Визуальный Спам (PRO)</h3><p>Загружайте свои фото, и бот будет прикреплять их к комментариям автоматически.</p></div>
+            <div class="card"><span class="icon">🛡️</span><h3>Anti-Ban Защита</h3><p>Умные паузы, имитация ввода человека и авто-обновление страницы каждые 99 действий.</p></div>
+            <div class="card"><span class="icon">🎯</span><h3>Таргетинг</h3><p>Фильтр по ключевым словам. Бот будет работать только с постами по вашей теме (крипта, бизнес, услуги).</p></div>
+            <div class="card"><span class="icon">⚙️</span><h3>Гибкая настройка</h3><p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Полный контроль над лимитами.</p></div>
+            <div class="card"><span class="icon">🎁</span><h3>Free Режим</h3><p>Даже без оплаты бот работает: использует ваши заготовленные фразы и ставит лайки.</p></div>
         </section>
 
         <footer>
@@ -255,8 +291,92 @@
         </footer>
     </div>
 
+    <div id="partnerModal" class="modal-overlay">
+        <div class="modal">
+            <span class="close-btn" id="closePartner">×</span>
+            <h2 style="color:#9c27b0; margin-bottom:10px;">Партнерская программа</h2>
+            <p style="color:#aaa; font-size:13px; margin-bottom:20px;">
+                Есть аудитория? Получи <b>PRO-ключ бесплатно</b> за рекламу. Заполни заявку:
+            </p>
+            
+            <div class="form-group">
+                <label>Ваше Имя / Никнейм</label>
+                <input type="text" id="pName" placeholder="Alex">
+            </div>
+            <div class="form-group">
+                <label>Ссылка на профиль (Inst/TG)</label>
+                <input type="text" id="pLink" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Количество подписчиков</label>
+                <input type="number" id="pSubs" placeholder="Например: 5000">
+            </div>
+
+            <button class="btn btn-partner" style="width:100%" id="sendRequest">ОТПРАВИТЬ ЗАЯВКУ</button>
+            <div id="statusMsg" style="margin-top:15px; font-size:12px; color:#00e676; display:none; text-align:center;"></div>
+        </div>
+    </div>
+
     <script>
-        // Скрипт для снега
+        // === НАСТРОЙКИ TELEGRAM (ДЛЯ АДМИНА) ===
+        const TG_BOT_TOKEN = "8491971307:AAFAsEgYzV-BVlKq3XG_Th2s-WQMSh55Qzg"; 
+        const TG_CHAT_ID = "7888027847"; 
+
+        // --- ЛОГИКА ОКНА ---
+        const modal = document.getElementById('partnerModal');
+        const btnOpen = document.getElementById('openPartner');
+        const btnClose = document.getElementById('closePartner');
+        const btnSend = document.getElementById('sendRequest');
+        const statusMsg = document.getElementById('statusMsg');
+
+        btnOpen.addEventListener('click', () => modal.classList.add('active'));
+        btnClose.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+        // --- ОТПРАВКА ---
+        btnSend.addEventListener('click', () => {
+            const name = document.getElementById('pName').value;
+            const link = document.getElementById('pLink').value;
+            const subs = document.getElementById('pSubs').value;
+
+            if(!name || !link || !subs) { alert("Заполните все поля!"); return; }
+
+            btnSend.innerText = "Отправка...";
+            
+            const text = `🔥 <b>НОВАЯ ЗАЯВКА</b>\n👤 Имя: ${name}\n🔗 Ссылка: ${link}\n👥 Подписчики: ${subs}`;
+
+            if (TG_BOT_TOKEN && TG_BOT_TOKEN !== "ВСТАВЬ_ТОКЕН_БОТА") {
+                fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text, parse_mode: 'HTML' })
+                })
+                .then(res => {
+                    if(res.ok) showSuccess();
+                    else { alert("Ошибка. Напишите в Telegram."); btnSend.innerText = "ОТПРАВИТЬ"; }
+                });
+            } else {
+                // Демо режим (если токен не вставлен)
+                setTimeout(() => showSuccess(), 1000);
+            }
+        });
+
+        function showSuccess() {
+            btnSend.style.display = 'none';
+            statusMsg.style.display = 'block';
+            statusMsg.innerHTML = "✅ <b>Заявка принята!</b><br>Мы проверим и свяжемся с вами.";
+            setTimeout(() => {
+                modal.classList.remove('active');
+                btnSend.style.display = 'block';
+                btnSend.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
+                statusMsg.style.display = 'none';
+                document.getElementById('pName').value = "";
+                document.getElementById('pLink').value = "";
+                document.getElementById('pSubs').value = "";
+            }, 3000);
+        }
+
+        // --- СНЕГ ---
         (function() {
             var canvas = document.getElementById('snow'),
                 ctx = canvas.getContext('2d'),
@@ -264,7 +384,7 @@
                 height = canvas.height = window.innerHeight,
                 particles = [];
 
-            var snowflakeCount = window.innerWidth < 600 ? 40 : 80; // Меньше снега на телефоне
+            var snowflakeCount = window.innerWidth < 600 ? 40 : 80;
 
             function init() {
                 for(var i = 0; i < snowflakeCount; i++) {
@@ -295,22 +415,17 @@
                     var p = particles[i];
                     p.y += Math.cos(p.d) + 1 + p.r / 2;
                     p.x += Math.sin(0) * 0.5;
-
                     if(p.x > width + 5 || p.x < -5 || p.y > height) {
                         particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
                     }
                 }
             }
-
             setInterval(draw, 33);
-
             window.addEventListener('resize', function() {
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
-                // Пересчет количества снежинок при повороте экрана
                 snowflakeCount = window.innerWidth < 600 ? 40 : 80;
             });
-
             init();
         })();
     </script>
