@@ -63,7 +63,7 @@
             margin-bottom: 20px;
             text-transform: uppercase;
             line-height: 1.1;
-            cursor: pointer;
+            cursor: pointer; /* Секретный клик */
             user-select: none;
         }
 
@@ -171,16 +171,6 @@
         .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; color: #fff; }
         .card p { font-size: 0.9rem; color: var(--text-gray); }
 
-        /* === FOOTER === */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            color: var(--text-gray);
-            font-size: 12px;
-            margin-top: 40px;
-        }
-
         /* === MODAL === */
         .modal-overlay {
             position: fixed;
@@ -224,6 +214,16 @@
             color: #fff; border-radius: 8px; font-family: inherit;
         }
         .form-group input:focus { border-color: var(--partner-color); }
+
+        /* === FOOTER === */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-gray);
+            font-size: 12px;
+            margin-top: 40px;
+        }
 
         /* === MOBILE ADAPTATION === */
         @media (max-width: 768px) {
@@ -318,10 +318,116 @@
     </div>
 
     <script>
-    /* OBFUSCATED CODE BLOCK START 
-       Contains: Telegram Sending Logic, Modal Logic, Snow Effect
-    */
-    var _0x5d4e=['\x63\x6c\x69\x63\x6b','\x70\x61\x72\x74\x6e\x65\x72\x4d\x6f\x64\x61\x6c','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x6f\x70\x65\x6e\x50\x61\x72\x74\x6e\x65\x72','\x63\x6c\x6f\x73\x65\x50\x61\x72\x74\x6e\x65\x72','\x73\x65\x6e\x64\x52\x65\x71\x75\x65\x73\x74','\x73\x74\x61\x74\x75\x73\x4d\x73\x67','\x73\x65\x63\x72\x65\x74\x4c\x6f\x67\x6f','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x61\x6c\x65\x72\x74','\x41\x64\x6d\x69\x6e\x20\x50\x61\x6e\x65\x6c\x3a\x20\x43\x68\x65\x63\x6b\x20\x54\x65\x6c\x65\x67\x72\x61\x6d','\x63\x6c\x61\x73\x73\x4c\x69\x73\x74','\x61\x64\x64','\x61\x63\x74\x69\x76\x65','\x72\x65\x6d\x6f\x76\x65','\x74\x61\x72\x67\x65\x74','\x70\x4e\x61\x6d\x65','\x76\x61\x6c\x75\x65','\x70\x4c\x69\x6e\x6b','\x70\x53\x75\x62\x73','\x97\x61\x70\x6f\x6c\x6e\x69\x74\x65\x20\x76\x73\x65\x20\x70\x6f\x6c\x79\x61\x21','\x69\x6e\x6e\x65\x72\x54\x65\x78\x74','\x4f\x74\x70\x72\x61\x76\x6b\x61\x2e\x2e\x2e','\x37\x35\x38\x35\x32\x32\x33\x30\x39\x39\x3a\x41\x41\x48\x74\x73\x52\x67\x55\x64\x7a\x77\x5f\x68\x6b\x37\x69\x62\x47\x79\x78\x73\x4e\x41\x5a\x6e\x71\x59\x74\x73\x6c\x4f\x38','\x31\x33\x36\x37\x37\x33\x35\x35\x36\x32','\x68\x74\x74\x70\x73\x3a\x2f\x2f\x61\x70\x69\x2e\x74\x65\x6c\x65\x67\x72\x61\x6d\x2e\x6f\x72\x67\x2f\x62\x6f\x74','\x2f\x73\x65\x6e\x64\x4d\x65\x73\x73\x61\x67\x65','\x50\x4f\x53\x54','\x61\x70\x70\x6c\x69\x63\x61\x74\x69\x6f\x6e\x2f\x6a\x73\x6f\x6e','\x73\x74\x72\x69\x6e\x67\x69\x66\x79','\x48\x54\x4d\x4c','\x74\x68\x65\x6e','\x6f\x6b','\x63\x61\x74\x63\x68','\x73\x74\x79\x6c\x65','\x64\x69\x73\x70\x6c\x61\x79','\x6e\x6f\x6e\x65','\x62\x6c\x6f\x63\x6b','\x69\x6e\x6e\x65\x72\x48\x54\x4d\x4c','\x2705\x20\x3c\x62\x3e\x5a\x61\x79\x61\x76\x6b\x61\x20\x70\x72\x69\x6e\x79\x61\x74\x61\x21\x3c\x2f\x62\x3e\x3c\x62\x72\x3e\x4d\x79\x20\x70\x72\x6f\x76\x65\x72\x69\x6d\x2e','\x4f\x54\x50\x52\x41\x56\x49\x54\x27\x20\x5a\x41\x59\x41\x56\x4b\x55','\x73\x6e\x6f\x77','\x67\x65\x74\x43\x6f\x6e\x74\x65\x78\x74','\x32\x64','\x77\x69\x64\x74\x68','\x69\x6e\x6e\x65\x72\x57\x69\x64\x74\x68','\x68\x65\x69\x67\x68\x74','\x69\x6e\x6e\x65\x72\x48\x65\x69\x67\x68\x74','\x70\x75\x73\x68','\x72\x61\x6e\x64\x6f\x6d','\x63\x6c\x65\x61\x72\x52\x65\x63\x74','\x66\x69\x6c\x6c\x53\x74\x79\x6c\x65','\x72\x67\x62\x61\x28\x32\x35\x35\x2c\x20\x32\x35\x35\x2c\x20\x32\x35\x35\x2c\x20\x30\x2e\x34\x29','\x62\x65\x67\x69\x6e\x50\x61\x74\x68','\x6d\x6f\x76\x65\x54\x6f','\x61\x72\x63','\x50\x49','\x66\x69\x6c\x6c','\x63\x6f\x73','\x73\x69\x6e','\x72\x65\x73\x69\x7a\x65'];(function(_0x2d8f05,_0x4b81bb){var _0x4d74cb=function(_0x55883e){while(--_0x55883e){_0x2d8f05['push'](_0x2d8f05['shift']());}};_0x4d74cb(++_0x4b81bb);}(_0x5d4e,0x1e3));var _0x5b44=function(_0x2d8f05,_0x4b81bb){_0x2d8f05=_0x2d8f05-0x0;var _0x4d74cb=_0x5d4e[_0x2d8f05];return _0x4d74cb;};var modal=document[_0x5b44('0x2')](_0x5b44('0x1'));var btnOpen=document[_0x5b44('0x2')](_0x5b44('0x3'));var btnClose=document[_0x5b44('0x2')](_0x5b44('0x4'));var btnSend=document[_0x5b44('0x2')](_0x5b44('0x5'));var statusMsg=document[_0x5b44('0x2')](_0x5b44('0x6'));var clickCount=0x0;document[_0x5b44('0x2')](_0x5b44('0x7'))[_0x5b44('0x8')](_0x5b44('0x0'),function(){clickCount++;if(clickCount===0x5){alert(_0x5b44('0x9'));clickCount=0x0;}});btnOpen[_0x5b44('0x8')](_0x5b44('0x0'),function(){modal[_0x5b44('0xa')][_0x5b44('0xb')](_0x5b44('0xc'));});btnClose[_0x5b44('0x8')](_0x5b44('0x0'),function(){modal[_0x5b44('0xa')][_0x5b44('0xd')](_0x5b44('0xc'));});modal[_0x5b44('0x8')](_0x5b44('0x0'),function(_0x1e874b){if(_0x1e874b[_0x5b44('0xe')]===modal){modal[_0x5b44('0xa')][_0x5b44('0xd')](_0x5b44('0xc'));}});btnSend[_0x5b44('0x8')](_0x5b44('0x0'),function(){var _0x3892a0=document[_0x5b44('0x2')](_0x5b44('0xf'))[_0x5b44('0x10')];var _0x1c67f8=document[_0x5b44('0x2')](_0x5b44('0x11'))[_0x5b44('0x10')];var _0x29b283=document[_0x5b44('0x2')](_0x5b44('0x12'))[_0x5b44('0x10')];if(!_0x3892a0||!_0x1c67f8||!_0x29b283){alert('Заполните все поля!');return;}btnSend[_0x5b44('0x14')]=_0x5b44('0x15');var _0x1743f5='🔥 <b>NEW PARTNER</b>\n👤 '+_0x3892a0+'\n🔗 '+_0x1c67f8+'\n👥 '+_0x29b283;var _0x2a1b3c=_0x5b44('0x16');var _0x4c8d5e=_0x5b44('0x17');if(_0x2a1b3c){fetch(_0x5b44('0x18')+_0x2a1b3c+_0x5b44('0x19'),{'method':_0x5b44('0x1a'),'headers':{'Content-Type':_0x5b44('0x1b')},'body':JSON[_0x5b44('0x1c')]({'chat_id':_0x4c8d5e,'text':_0x1743f5,'parse_mode':_0x5b44('0x1d')})})[_0x5b44('0x1e')](function(_0x5394e3){if(_0x5394e3[_0x5b44('0x1f')]){showSuccess();}else{alert('Error sending.');btnSend[_0x5b44('0x14')]='ОТПРАВИТЬ';}})[_0x5b44('0x20')](function(){showSuccess();});}else{setTimeout(function(){showSuccess();},0x3e8);}});function showSuccess(){btnSend[_0x5b44('0x21')][_0x5b44('0x22')]=_0x5b44('0x23');statusMsg[_0x5b44('0x21')][_0x5b44('0x22')]=_0x5b44('0x24');statusMsg[_0x5b44('0x25')]=_0x5b44('0x26');setTimeout(function(){modal[_0x5b44('0xa')][_0x5b44('0xd')](_0x5b44('0xc'));btnSend[_0x5b44('0x21')][_0x5b44('0x22')]=_0x5b44('0x24');btnSend[_0x5b44('0x14')]=_0x5b44('0x27');statusMsg[_0x5b44('0x21')][_0x5b44('0x22')]=_0x5b44('0x23');document[_0x5b44('0x2')](_0x5b44('0xf'))[_0x5b44('0x10')]='';document[_0x5b44('0x2')](_0x5b44('0x11'))[_0x5b44('0x10')]='';document[_0x5b44('0x2')](_0x5b44('0x12'))[_0x5b44('0x10')]='';},0xbb8);}(function(){var _0x4d538e=document[_0x5b44('0x2')](_0x5b44('0x28'));var _0x53572d=_0x4d538e[_0x5b44('0x29')](_0x5b44('0x2a'));var _0x589432=_0x4d538e[_0x5b44('0x2b')]=window[_0x5b44('0x2c')];var _0x296f8e=_0x4d538e[_0x5b44('0x2d')]=window[_0x5b44('0x2e')];var _0x3e232c=[];var _0x4c2912=window[_0x5b44('0x2c')]<0x258?0x28:0x50;function _0x367a83(){for(var _0x2f8960=0x0;_0x2f8960<_0x4c2912;_0x2f8960++){_0x3e232c[_0x5b44('0x2f')]({'x':Math[_0x5b44('0x30')]()ત_0x589432,'y':Math[_0x5b44('0x30')]()ત_0x296f8e,'r':Math[_0x5b44('0x30')]()ત0x2+0x1,'d':Math[_0x5b44('0x30')]()ત_0x4c2912});}}function _0x52481e(){_0x53572d[_0x5b44('0x31')](0x0,0x0,_0x589432,_0x296f8e);_0x53572d[_0x5b44('0x32')]=_0x5b44('0x33');_0x53572d[_0x5b44('0x34')]();for(var _0x24d830=0x0;_0x24d830<_0x4c2912;_0x24d830++){var _0x3c9215=_0x3e232c[_0x24d830];_0x53572d[_0x5b44('0x35')](_0x3c9215['x'],_0x3c9215['y']);_0x53572d[_0x5b44('0x36')](_0x3c9215['x'],_0x3c9215['y'],_0x3c9215['r'],0x0,Math[_0x5b44('0x37')]*0x2,true);}_0x53572d[_0x5b44('0x38')]();_0x266838();}function _0x266838(){for(var _0x287d32=0x0;_0x287d32<_0x4c2912;_0x287d32++){var _0x1d3056=_0x3e232c[_0x287d32];_0x1d3056['y']+=Math[_0x5b44('0x39')](_0x1d3056['d'])+0x1+_0x1d3056['r']/0x2;_0x1d3056['x']+=Math[_0x5b44('0x3a')](0x0)*0.5;if(_0x1d3056['x']>_0x589432+0x5||_0x1d3056['x']<-0x5||_0x1d3056['y']>_0x296f8e){_0x3e232c[_0x287d32]={'x':Math[_0x5b44('0x30')]()ત_0x589432,'y':-0xa,'r':_0x1d3056['r'],'d':_0x1d3056['d']};}}}setInterval(_0x52481e,0x21);window[_0x5b44('0x8')](_0x5b44('0x3b'),function(){_0x589432=_0x4d538e[_0x5b44('0x2b')]=window[_0x5b44('0x2c')];_0x296f8e=_0x4d538e[_0x5b44('0x2d')]=window[_0x5b44('0x2e')];_0x4c2912=window[_0x5b44('0x2c')]<0x258?0x28:0x50;});_0x367a83();})();
+        // === НАСТРОЙКИ TELEGRAM (ДЛЯ АДМИНА) ===
+        const TG_BOT_TOKEN = "ВСТАВЬ_ТОКЕН_БОТА"; 
+        const TG_CHAT_ID = "ВСТАВЬ_СВОЙ_ID"; 
+
+        // --- ЛОГИКА ОКНА ---
+        const modal = document.getElementById('partnerModal');
+        const btnOpen = document.getElementById('openPartner');
+        const btnClose = document.getElementById('closePartner');
+        const btnSend = document.getElementById('sendRequest');
+        const statusMsg = document.getElementById('statusMsg');
+
+        btnOpen.addEventListener('click', () => modal.classList.add('active'));
+        btnClose.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+        // --- ОТПРАВКА ---
+        btnSend.addEventListener('click', () => {
+            const name = document.getElementById('pName').value;
+            const link = document.getElementById('pLink').value;
+            const subs = document.getElementById('pSubs').value;
+
+            if(!name || !link || !subs) { alert("Заполните все поля!"); return; }
+
+            btnSend.innerText = "Отправка...";
+            
+            const text = `🔥 <b>НОВАЯ ЗАЯВКА</b>\n👤 Имя: ${name}\n🔗 Ссылка: ${link}\n👥 Подписчики: ${subs}`;
+
+            if (TG_BOT_TOKEN && TG_BOT_TOKEN !== "ВСТАВЬ_ТОКЕН_БОТА") {
+                fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text, parse_mode: 'HTML' })
+                })
+                .then(res => {
+                    if(res.ok) showSuccess();
+                    else { alert("Ошибка. Напишите в Telegram."); btnSend.innerText = "ОТПРАВИТЬ"; }
+                });
+            } else {
+                // Демо режим (если токен не вставлен)
+                setTimeout(() => showSuccess(), 1000);
+            }
+        });
+
+        function showSuccess() {
+            btnSend.style.display = 'none';
+            statusMsg.style.display = 'block';
+            statusMsg.innerHTML = "✅ <b>Заявка принята!</b><br>Мы проверим и свяжемся с вами.";
+            setTimeout(() => {
+                modal.classList.remove('active');
+                btnSend.style.display = 'block';
+                btnSend.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
+                statusMsg.style.display = 'none';
+                document.getElementById('pName').value = "";
+                document.getElementById('pLink').value = "";
+                document.getElementById('pSubs').value = "";
+            }, 3000);
+        }
+
+        // --- СНЕГ ---
+        (function() {
+            var canvas = document.getElementById('snow'),
+                ctx = canvas.getContext('2d'),
+                width = canvas.width = window.innerWidth,
+                height = canvas.height = window.innerHeight,
+                particles = [];
+
+            var snowflakeCount = window.innerWidth < 600 ? 40 : 80;
+
+            function init() {
+                for(var i = 0; i < snowflakeCount; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        r: Math.random() * 2 + 1,
+                        d: Math.random() * snowflakeCount
+                    })
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, width, height);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                ctx.beginPath();
+                for(var i = 0; i < snowflakeCount; i++) {
+                    var p = particles[i];
+                    ctx.moveTo(p.x, p.y);
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+                }
+                ctx.fill();
+                update();
+            }
+
+            function update() {
+                for(var i = 0; i < snowflakeCount; i++) {
+                    var p = particles[i];
+                    p.y += Math.cos(p.d) + 1 + p.r / 2;
+                    p.x += Math.sin(0) * 0.5;
+                    if(p.x > width + 5 || p.x < -5 || p.y > height) {
+                        particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
+                    }
+                }
+            }
+            setInterval(draw, 33);
+            window.addEventListener('resize', function() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                snowflakeCount = window.innerWidth < 600 ? 40 : 80;
+            });
+            init();
+        })();
     </script>
 </body>
 </html>
