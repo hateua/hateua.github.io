@@ -3,236 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULTRA OSINT TERMINAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>PHOENIX ULTIMATE OSINT v2.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0a0a0a;
-            --panel-color: #121212;
-            --accent-color: #ff2e2e;
-            --text-main: #e0e0e0;
-            --text-dim: #888;
-            --border-color: #333;
+            --bg: #050505;
+            --card: #0f0f0f;
+            --accent: #00ff41; /* Хакерский зеленый */
+            --blue: #00d4ff;
+            --danger: #ff2e2e;
+            --text: #e0e0e0;
+            --border: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Inter', sans-serif;
             height: 100vh;
             display: flex;
             overflow: hidden;
         }
 
-        /* Sidebar */
+        /* --- SIDEBAR --- */
         aside {
-            width: 260px;
-            background-color: var(--panel-color);
-            border-right: 1px solid var(--border-color);
+            width: 280px;
+            background: var(--card);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 30px 20px;
+            z-index: 10;
         }
 
         .logo {
             font-family: 'Fira Code', monospace;
-            font-weight: 700;
+            color: var(--accent);
             font-size: 1.2rem;
-            color: var(--accent-color);
+            font-weight: bold;
             margin-bottom: 40px;
-            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--accent);
         }
 
-        .nav-item {
+        .nav-link {
             padding: 12px;
-            margin-bottom: 8px;
-            border-radius: 6px;
-            cursor: pointer;
+            color: #666;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 10px;
             transition: 0.3s;
-            color: var(--text-dim);
-            list-style: none;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
 
-        .nav-item:hover, .nav-item.active {
-            background: #1d1d1d;
-            color: var(--accent-color);
+        .nav-link:hover, .nav-link.active {
+            background: #1a1a1a;
+            color: var(--accent);
         }
 
-        /* Main Content */
+        /* --- MAIN CONTENT --- */
         main {
             flex: 1;
             padding: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            overflow-y: auto;
+            position: relative;
         }
 
-        .search-container {
-            max-width: 800px;
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        header p { color: #666; margin-bottom: 30px; }
+
+        /* Search Area */
+        .search-section {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        h1 { font-size: 2rem; margin-bottom: 10px; }
-        p { color: var(--text-dim); margin-bottom: 25px; }
-
-        .input-group {
+        .input-wrapper {
             display: flex;
-            gap: 10px;
-            background: var(--panel-color);
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
+            gap: 15px;
+            background: #000;
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
         }
 
         input {
             flex: 1;
             background: transparent;
             border: none;
-            color: white;
+            color: var(--accent);
             padding: 10px;
             font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
             outline: none;
         }
 
         button {
-            background: var(--accent-color);
-            color: white;
+            background: var(--accent);
+            color: #000;
             border: none;
-            padding: 10px 25px;
-            border-radius: 6px;
+            padding: 12px 30px;
+            border-radius: 8px;
             font-weight: bold;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: 0.3s;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .card:hover { border-color: var(--accent); }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 10px;
+        }
+
+        .type-tag {
+            font-size: 0.7rem;
+            background: #1a1a1a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--blue);
+            text-transform: uppercase;
+        }
+
+        .link-item {
+            display: block;
+            color: #ccc;
+            text-decoration: none;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #151515;
             transition: 0.2s;
         }
 
-        button:hover { opacity: 0.8; transform: translateY(-1px); }
+        .link-item:hover { color: var(--accent); padding-left: 5px; }
 
-        /* Output Terminal */
-        #results {
-            flex: 1;
-            background: #050505;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .terminal-log {
             font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
+            background: #000;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: #00ff41;
+            margin-bottom: 20px;
+            height: 100px;
             overflow-y: auto;
-            line-height: 1.6;
+            border-left: 3px solid var(--accent);
         }
 
-        .res-item { margin-bottom: 15px; border-left: 2px solid var(--accent-color); padding-left: 15px; }
-        .res-title { color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 5px; }
-        .res-link { color: #4aa3ff; text-decoration: none; word-break: break-all; }
-        .res-link:hover { text-decoration: underline; }
-
-        .tag {
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            background: #222;
-            border-radius: 4px;
-            margin-right: 5px;
-        }
     </style>
 </head>
 <body>
 
     <aside>
-        <div class="logo">ULTRA_OSINT</div>
-        <nav>
-            <li class="nav-item active">Dashboard</li>
-            <li class="nav-item">History</li>
-            <li class="nav-item">API Settings</li>
-            <li class="nav-item">Database Status</li>
-        </nav>
+        <div class="logo">> PHOENIX_OSINT</div>
+        <div class="nav-link active">Dashboard</div>
+        <div class="nav-link">Google Dorks</div>
+        <div class="nav-link">Social Analysis</div>
+        <div class="nav-link">Crypto Tracker</div>
+        <div class="nav-link">DarkWeb Search</div>
+        <div style="margin-top: auto; color: #333; font-size: 0.7rem;">v2.0.4 Stable Build</div>
     </aside>
 
     <main>
-        <div class="search-container">
-            <h1>Универсальный поиск</h1>
-            <p>Введите Nickname, Email, IP, Телефон или Домен для анализа.</p>
-            
-            <div class="input-group">
-                <input type="text" id="targetInput" placeholder="johndoe / example@mail.com / 8.8.8.8" spellcheck="false">
-                <button onclick="startSearch()">SCAN</button>
-            </div>
-        </div>
+        <div class="container">
+            <header>
+                <h1>Система Поиска</h1>
+                <p>Единая точка входа для анализа любых цифровых следов.</p>
+            </header>
 
-        <div id="results">
-            <span style="color: #444;">> Ожидание ввода данных...</span>
+            <section class="search-section">
+                <div class="input-wrapper">
+                    <input type="text" id="mainInput" placeholder="Введите Nick, Email, Phone, IP, BTC или Домен..." spellcheck="false">
+                    <button onclick="performOSINT()">Сканировать</button>
+                </div>
+            </section>
+
+            <div id="terminal" class="terminal-log">
+                [SYSTEM] Ожидание инициализации...<br>
+                [SYSTEM] Введите данные для начала глубокого анализа.
+            </div>
+
+            <div id="resultsGrid" class="results-grid">
+                </div>
         </div>
     </main>
 
     <script>
-        function startSearch() {
-            const input = document.getElementById('targetInput').value.trim();
-            const results = document.getElementById('results');
+        const terminal = document.getElementById('terminal');
+        const grid = document.getElementById('resultsGrid');
+
+        function log(msg, type = 'info') {
+            const time = new Date().toLocaleTimeString();
+            terminal.innerHTML += `<br>[${time}] ${msg}`;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function performOSINT() {
+            const val = document.getElementById('mainInput').value.trim();
+            if(!val) return log('ОШИБКА: Пустой запрос', 'error');
+
+            grid.innerHTML = '';
+            log(`Запуск сканирования объекта: ${val}...`);
             
-            if (!input) {
-                results.innerHTML = '<span style="color: red;">[!] Ошибка: Поле ввода пусто.</span>';
-                return;
-            }
+            const data = detectType(val);
+            log(`Тип данных определен: ${data.type}`);
 
-            results.innerHTML = `<span style="color: var(--accent-color);">[*] Анализ цели: ${input}</span>\n<br><br>`;
-
-            // Логика определения типа данных
-            let type = "Nickname / General";
-            if (input.includes('@')) type = "Email";
-            else if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) type = "IP Address";
-            else if (input.includes('.')) type = "Domain";
-            else if (input.startsWith('+') || /^\d{10,}/.test(input)) type = "Phone";
-
-            addResult("Тип данных", type);
-
-            // Генерация ссылок в зависимости от типа
-            if (type === "Email") {
-                generateLinks([
-                    { name: "HaveIBeenPwned (Утечки)", url: `https://haveibeenpwned.com/account/${input}` },
-                    { name: "Hunter.io (Поиск по домену)", url: `https://hunter.io/email-verifier/${input}` },
-                    { name: "EPIEOS (Связанные Google аккаунты)", url: `https://epieos.com/?q=${input}` }
-                ]);
-            } else if (type === "IP Address") {
-                generateLinks([
-                    { name: "Shodan (Уязвимости)", url: `https://www.shodan.io/host/${input}` },
-                    { name: "IP-API (Геолокация)", url: `http://ip-api.com/#${input}` },
-                    { name: "Whois IP", url: `https://whois.domaintools.com/${input}` }
-                ]);
-            } else if (type === "Nickname / General") {
-                generateLinks([
-                    { name: "Sherlock (Поиск по соцсетям)", url: `https://www.google.com/search?q=site:instagram.com+${input}+OR+site:github.com+${input}` },
-                    { name: "Namechk (Доступность ника)", url: `https://namechk.com/` },
-                    { name: "Social Searcher", url: `https://www.social-searcher.com/search-users/?q=${input}` }
-                ]);
-            } else if (type === "Domain") {
-                generateLinks([
-                    { name: "Whois Domain", url: `https://www.whois.com/whois/${input}` },
-                    { name: "DNSDumpster", url: `https://dnsdumpster.com/` },
-                    { name: "SecurityTrails", url: `https://securitytrails.com/domain/${input}` }
-                ]);
-            }
+            // Генерация карточек
+            renderGeneralInfo(val, data.type);
+            renderDorks(val, data.type);
+            renderSocialLinks(val, data.type);
+            renderSpecialized(val, data.type);
         }
 
-        function addResult(title, content) {
-            const results = document.getElementById('results');
-            results.innerHTML += `
-                <div class="res-item">
-                    <span class="res-title">${title}</span>
-                    <span>${content}</span>
+        function detectType(val) {
+            if (val.includes('@')) return {type: 'EMAIL'};
+            if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(val)) return {type: 'IP'};
+            if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(val)) return {type: 'CRYPTO'};
+            if (/^\+?[1-9]\d{10,14}$/.test(val)) return {type: 'PHONE'};
+            if (val.includes('.') && val.length > 4) return {type: 'DOMAIN'};
+            return {type: 'NICKNAME'};
+        }
+
+        function createCard(title, links) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            let linksHTML = links.map(l => `<a href="${l.url}" target="_blank" class="link-item">→ ${l.name}</a>`).join('');
+            card.innerHTML = `
+                <div class="card-header">
+                    <span style="font-weight: bold">${title}</span>
+                    <span class="type-tag">External</span>
                 </div>
+                <div class="card-body">${linksHTML}</div>
             `;
+            grid.appendChild(card);
         }
 
-        function generateLinks(data) {
-            data.forEach(item => {
-                const results = document.getElementById('results');
-                results.innerHTML += `
-                    <div class="res-item">
-                        <span class="tag">EXTERNAL DB</span>
-                        <span class="res-title">${item.name}</span>
-                        <a href="${item.url}" target="_blank" class="res-link">${item.url}</a>
-                    </div>
-                `;
-            });
+        function renderGeneralInfo(val, type) {
+            let links = [
+                {name: 'Google Search', url: `https://www.google.com/search?q="${val}"`},
+                {name: 'Yandex Global', url: `https://yandex.com/search/?text=${val}`},
+                {name: 'DuckDuckGo', url: `https://duckduckgo.com/?q=${val}`}
+            ];
+            createCard('Общий поиск', links);
+        }
+
+        function renderDorks(val, type) {
+            let links = [
+                {name: 'Поиск документов (PDF, DOC)', url: `https://www.google.com/search?q=site:text.com filetype:pdf "${val}"`},
+                {name: 'Индексированные директории', url: `https://www.google.com/search?q="${val}" intitle:"index of"`},
+                {name: 'Скрытые упоминания', url: `https://www.google.com/search?q="${val}" -site:facebook.com -site:instagram.com`}
+            ];
+            createCard('Google Dorks (Deep)', links);
+        }
+
+        function renderSocialLinks(val, type) {
+            if(type === 'NICKNAME' || type === 'EMAIL') {
+                const nick = val.split('@')[0];
+                let links = [
+                    {name: 'Sherlock Social Search', url: `https://www.google.com/search?q=site:instagram.com+${nick}+OR+site:twitter.com+${nick}`},
+                    {name: 'Namechk', url: `https://namechk.com/`},
+                    {name: 'Lumper (GitHub)', url: `https://github.com/search?q=${nick}&type=users`}
+                ];
+                createCard('Социальные сети', links);
+            }
+        }
+
+        function renderSpecialized(val, type) {
+            let links = [];
+            if(type === 'EMAIL') {
+                links = [
+                    {name: 'Have I Been Pwned (Утечки)', url: `https://haveibeenpwned.com/`},
+                    {name: 'Epieos (Google Account)', url: `https://epieos.com/?q=${val}`},
+                    {name: 'Hunter.io', url: `https://hunter.io/search/${val}`}
+                ];
+            } else if(type === 'IP') {
+                links = [
+                    {name: 'Shodan IP DB', url: `https://www.shodan.io/host/${val}`},
+                    {name: 'Censys Search', url: `https://search.censys.io/hosts/${val}`},
+                    {name: 'IP-API Geo', url: `http://ip-api.com/#${val}`}
+                ];
+            } else if(type === 'PHONE') {
+                links = [
+                    {name: 'NumLookup', url: `https://www.numlookup.com/`},
+                    {name: 'TrueCaller Web', url: `https://www.truecaller.com/search/ru/${val}`},
+                    {name: 'Sync.me', url: `https://sync.me/search/?number=${val}`}
+                ];
+            } else if(type === 'CRYPTO') {
+                links = [
+                    {name: 'Blockchain Explorer', url: `https://www.blockchain.com/explorer/addresses/btc/${val}`},
+                    {name: 'Whale Alert', url: `https://whale-alert.io/`}
+                ];
+            } else if(type === 'DOMAIN') {
+                links = [
+                    {name: 'Whois History', url: `https://whois.domaintools.com/${val}`},
+                    {name: 'SecurityTrails', url: `https://securitytrails.com/domain/${val}`},
+                    {name: 'Wayback Machine', url: `https://web.archive.org/web/*/${val}`}
+                ];
+            }
+
+            if(links.length > 0) createCard('Спец. инструменты', links);
         }
     </script>
 </body>
