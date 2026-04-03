@@ -3,189 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitMovie / Global Terminal</title>
+    <title>GitMovie OS | Terminal v3.0</title>
     <style>
         :root {
-            --bg: #0d1117; --card: #161b22; --border: #30363d;
-            --text: #c9d1d9; --accent: #238636; --blue: #58a6ff; --yellow: #f1e05a;
+            --bg: #0d1117; --side: #010409; --card: #161b22; --border: #30363d;
+            --text: #c9d1d9; --muted: #8b949e; --accent: #238636; --blue: #58a6ff; --yellow: #f1e05a;
         }
         body {
             background: var(--bg); color: var(--text);
             font-family: -apple-system, system-ui, sans-serif;
-            margin: 0; overflow-x: hidden;
+            margin: 0; display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* Дизайн в стиле GitHub */
-        header {
-            background: var(--card); border-bottom: 1px solid var(--border);
-            padding: 12px 5%; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
+        /* Sidebar */
+        aside {
+            width: 260px; background: var(--side); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .search-bar { flex-grow: 0.5; position: relative; }
-        input {
-            width: 100%; background: var(--bg); border: 1px solid var(--border);
+        .side-header { padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 18px; }
+        .side-nav { padding: 10px; overflow-y: auto; flex-grow: 1; }
+        .nav-item { 
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; 
+            margin-bottom: 2px; color: var(--muted); transition: 0.2s;
+        }
+        .nav-item:hover { background: var(--card); color: var(--text); }
+        .nav-item.active { background: var(--card); color: var(--blue); font-weight: 600; border-left: 3px solid var(--blue); }
+
+        /* Main Content */
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        header {
+            padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .search-container { position: relative; width: 50%; }
+        input#search {
+            width: 100%; background: var(--side); border: 1px solid var(--border);
             padding: 8px 12px; color: white; border-radius: 6px; outline: none;
         }
-        input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(88,166,255,0.1); }
 
-        .container { padding: 20px 5%; }
-        
-        /* Сетка фильмов */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px; margin-top: 20px;
+        .lang-switch { display: flex; gap: 5px; }
+        .lang-btn { 
+            background: var(--card); border: 1px solid var(--border); color: var(--muted);
+            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
+        }
+        .lang-btn.active { color: var(--blue); border-color: var(--blue); }
+
+        /* Content Area */
+        .content { padding: 20px; overflow-y: auto; }
+        .movie-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
         }
 
-        .movie-card {
+        /* Movie Card */
+        .card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: 8px; overflow: hidden; transition: 0.2s;
-            cursor: pointer; position: relative; animation: fadeIn 0.5s ease;
+            border-radius: 6px; overflow: hidden; transition: 0.2s; cursor: pointer;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .movie-card:hover { border-color: #8b949e; transform: translateY(-5px); }
-        .movie-card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--border); }
-        
-        .movie-info { padding: 12px; }
-        .movie-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; height: 40px; overflow: hidden; }
-        .movie-meta { display: flex; justify-content: space-between; font-size: 12px; color: #8b949e; }
-        .rating { color: var(--yellow); font-weight: bold; }
+        .card:hover { border-color: var(--muted); transform: translateY(-3px); }
+        .card img { width: 100%; height: 260px; object-fit: cover; }
+        .card-body { padding: 10px; }
+        .card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 5px; }
 
-        /* Плеер и Модалка */
+        /* Modal Player */
         .modal {
             display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; overflow-y: auto;
+            background: rgba(0,0,0,0.9); z-index: 2000; padding: 40px; box-sizing: border-box;
         }
-        .modal-content {
-            max-width: 1000px; margin: 40px auto; background: var(--card);
-            border: 1px solid var(--border); border-radius: 12px; padding: 25px;
+        .modal-inner {
+            max-width: 1100px; margin: 0 auto; background: var(--bg);
+            border: 1px solid var(--border); border-radius: 12px; height: 90vh;
+            display: flex; flex-direction: column; overflow: hidden;
         }
-        .player-container { background: #000; border-radius: 8px; aspect-ratio: 16/9; margin: 20px 0; }
+        .modal-body { display: flex; padding: 20px; gap: 20px; overflow-y: auto; }
+        .modal-left { width: 300px; flex-shrink: 0; }
+        .modal-right { flex-grow: 1; }
+        
+        .player-box { background: #000; width: 100%; aspect-ratio: 16/9; margin-top: 20px; border-radius: 8px; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* Жанры */
-        .genres { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 10px; }
-        .genre-btn {
-            background: var(--card); border: 1px solid var(--border); color: var(--text);
-            padding: 4px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; white-space: nowrap;
+        .stat-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            background: var(--card); border: 1px solid var(--border);
+            font-size: 12px; margin-right: 8px; margin-bottom: 8px;
         }
-        .genre-btn.active { background: var(--blue); color: #000; border-color: var(--blue); }
 
-        .loader { text-align: center; padding: 50px; font-family: monospace; color: var(--blue); }
+        /* Loader */
+        .loader { text-align: center; color: var(--blue); font-family: monospace; padding: 40px; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="font-weight: 700; font-size: 18px; letter-spacing: -0.5px;">GitCinema <span style="font-weight: 300; color: var(--border);">v2.0</span></div>
-    <div class="search-bar">
-        <input type="text" id="search" placeholder="Поиск по названию..." onkeypress="handleSearch(event)">
+<aside>
+    <div class="side-header">GitMovie_v3</div>
+    <div class="side-nav" id="genreNav">
+        <div style="font-size: 12px; color: var(--muted); padding: 10px;">BROWSE BY GENRE</div>
+        <div class="nav-item active" onclick="loadMovies('all', this)">All Releases</div>
+        <div class="nav-item" onclick="loadMovies('action', this)">Action</div>
+        <div class="nav-item" onclick="loadMovies('sci-fi', this)">Sci-Fi</div>
+        <div class="nav-item" onclick="loadMovies('drama', this)">Drama</div>
+        <div class="nav-item" onclick="loadMovies('horror', this)">Horror</div>
+        <div class="nav-item" onclick="loadMovies('thriller', this)">Thriller</div>
+        <div class="nav-item" onclick="loadMovies('comedy', this)">Comedy</div>
+        <div class="nav-item" onclick="loadMovies('animation', this)">Animation</div>
+        <div style="font-size: 12px; color: var(--muted); padding: 10px; margin-top: 10px;">NETWORK</div>
+        <div class="nav-item" onclick="alert('Switching to TV Series Node...')">TV Series</div>
     </div>
-    <div style="font-size: 12px; color: var(--accent);">● AUTO_FETCH_ENABLED</div>
-</header>
+</aside>
 
-<div class="container">
-    <div class="genres" id="genreList">
-        <button class="genre-btn active" onclick="loadMovies('all')">All Releases</button>
-        <button class="genre-btn" onclick="loadMovies('sci-fi')">Sci-Fi</button>
-        <button class="genre-btn" onclick="loadMovies('action')">Action</button>
-        <button class="genre-btn" onclick="loadMovies('adventure')">Adventure</button>
-        <button class="genre-btn" onclick="loadMovies('horror')">Horror</button>
-        <button class="genre-btn" onclick="loadMovies('comedy')">Comedy</button>
+<main>
+    <header>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Search data..." onkeypress="handleSearch(event)">
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        </div>
+    </header>
+
+    <div class="content">
+        <div id="loader" class="loader" style="display:none;">> INITIALIZING_DATA_STREAM...</div>
+        <div class="movie-grid" id="movieGrid"></div>
     </div>
-
-    <h2 id="listTitle" style="font-weight: 400; font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Trending Now</h2>
-    
-    <div id="loader" class="loader" style="display:none;">[ LOADING_DATA_FROM_GRID... ]</div>
-    <div class="grid" id="movieGrid"></div>
-</div>
+</main>
 
 <div id="modal" class="modal">
-    <div class="modal-content">
-        <span style="float:right; cursor:pointer; font-size: 24px;" onclick="closeModal()">×</span>
-        <div id="movieDetails" style="display: flex; gap: 20px; flex-wrap: wrap;"></div>
-        <div class="player-container">
-            <iframe id="mainPlayer" src="" allowfullscreen></iframe>
-        </div>
-        <div id="reviews" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
-            <h4 style="margin-top: 0;">Community Reviews</h4>
-            <div style="color: #8b949e; font-size: 13px; background: #010409; padding: 15px; border-radius: 6px;">
-                // Нет комментариев к этому объекту. Будьте первым, кто сделает pull request с отзывом.
+    <div class="modal-inner">
+        <header style="border-radius: 12px 12px 0 0;">
+            <div id="mTitle" style="font-weight: bold;"></div>
+            <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button>
+        </header>
+        <div class="modal-body">
+            <div class="modal-left">
+                <img id="mPoster" src="" style="width:100%; border-radius:8px; border:1px solid var(--border);">
+                <div id="mStats" style="margin-top: 15px;"></div>
+            </div>
+            <div class="modal-right">
+                <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;" id="mYear"></div>
+                <p id="mDesc" style="font-size: 14px; line-height: 1.6; color: var(--muted);"></p>
+                
+                <div class="player-box">
+                    <iframe id="mainPlayer" src="" allowfullscreen></iframe>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4 id="labelComments">System Log / Reviews</h4>
+                    <div style="background: var(--side); padding: 15px; border-radius: 6px; font-size: 13px; color: var(--muted); border: 1px dashed var(--border);">
+                        [AUTH_REQUIRED] Please sign in with GitHub to pull/push comments.
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const grid = document.getElementById('movieGrid');
-    const loader = document.getElementById('loader');
+    // Переводы
+    const i18n = {
+        en: {
+            search: "Search database...",
+            loading: "> INITIALIZING_DATA_STREAM...",
+            comments: "System Log / Reviews",
+            noDesc: "No description available in the database."
+        },
+        ru: {
+            search: "Поиск в базе данных...",
+            loading: "> ИНИЦИАЛИЗАЦИЯ ПОТОКА ДАННЫХ...",
+            comments: "Системный лог / Отзывы",
+            noDesc: "Описание отсутствует в базе данных."
+        }
+    };
 
-    // Функция загрузки данных (БЕЗ API КЛЮЧА)
-    async function loadMovies(genre = 'all', query = '') {
+    let currentLang = 'en';
+
+    function setLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === lang));
+        document.getElementById('search').placeholder = i18n[lang].search;
+        document.getElementById('labelComments').innerText = i18n[lang].comments;
+    }
+
+    async function loadMovies(genre = 'all', el = null, query = '') {
+        const grid = document.getElementById('movieGrid');
+        const loader = document.getElementById('loader');
+        
+        if(el) {
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+
         grid.innerHTML = '';
         loader.style.display = 'block';
         
-        let url = `https://yts.mx/api/v2/list_movies.json?limit=24&sort_by=year`;
+        let url = `https://yts.mx/api/v2/list_movies.json?limit=30&sort_by=seeds`;
         if (genre !== 'all') url += `&genre=${genre}`;
-        if (query !== '') url += `&query_term=${encodeURIComponent(query)}`;
+        if (query) url += `&query_term=${encodeURIComponent(query)}`;
 
         try {
             const res = await fetch(url);
             const data = await res.json();
-            
-            if (data.data.movie_count === 0) {
-                grid.innerHTML = '<p>Ничего не найдено по вашему запросу.</p>';
-            } else {
-                displayMovies(data.data.movies);
-            }
+            if (data.data.movies) display(data.data.movies);
         } catch (e) {
-            grid.innerHTML = '<p>Ошибка подключения к базе данных.</p>';
+            grid.innerHTML = '<div style="color:red">ERROR: Connection timed out.</div>';
         } finally {
             loader.style.display = 'none';
         }
     }
 
-    function displayMovies(movies) {
-        movies.forEach(movie => {
-            const card = document.createElement('div');
-            card.className = 'movie-card';
-            card.onclick = () => openMovie(movie);
-            card.innerHTML = `
-                <img src="${movie.large_cover_image}" alt="${movie.title}">
-                <div class="movie-info">
-                    <div class="movie-title">${movie.title}</div>
-                    <div class="movie-meta">
-                        <span>${movie.year}</span>
-                        <span class="rating">★ ${movie.rating}</span>
+    function display(movies) {
+        const grid = document.getElementById('movieGrid');
+        movies.forEach(m => {
+            grid.innerHTML += `
+                <div class="card" onclick="openMovie(${m.id})">
+                    <img src="${m.medium_cover_image}">
+                    <div class="card-body">
+                        <div class="card-title">${m.title}</div>
+                        <div class="card-meta">
+                            <span>${m.year}</span>
+                            <span style="color:var(--yellow)">★ ${m.rating}</span>
+                        </div>
                     </div>
                 </div>
             `;
-            grid.appendChild(card);
         });
+        // Сохраним данные в глобальную переменную для быстрого доступа
+        window.currentMovies = movies;
     }
 
-    function openMovie(movie) {
+    function openMovie(id) {
+        const m = window.currentMovies.find(x => x.id === id);
         const modal = document.getElementById('modal');
-        const details = document.getElementById('movieDetails');
         
-        details.innerHTML = `
-            <img src="${movie.medium_cover_image}" style="width:150px; border-radius:6px; border: 1px solid var(--border);">
-            <div style="flex: 1; min-width: 300px;">
-                <h1 style="margin:0">${movie.title}</h1>
-                <div style="margin: 10px 0; display:flex; gap:10px;">
-                    <span style="color: var(--blue)">${movie.year}</span>
-                    <span style="color: var(--yellow)">IMDb: ${movie.rating}</span>
-                </div>
-                <p style="font-size: 14px; color: #8b949e; line-height: 1.6;">${movie.description_full || 'Описание отсутствует.'}</p>
-                <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                    ${movie.genres.map(g => `<span style="background: #21262d; padding: 2px 8px; border-radius: 10px; font-size:11px;">${g}</span>`).join('')}
-                </div>
-            </div>
+        document.getElementById('mTitle').innerText = m.title;
+        document.getElementById('mPoster').src = m.large_cover_image;
+        document.getElementById('mYear').innerText = `Released: ${m.year} | Duration: ${m.runtime} min | Language: ${m.language}`;
+        document.getElementById('mDesc').innerText = m.description_full || i18n[currentLang].noDesc;
+        
+        // Статистика
+        document.getElementById('mStats').innerHTML = `
+            <div class="stat-badge">IMDb: ${m.rating}</div>
+            <div class="stat-badge">Likes: ${m.like_count}</div>
+            <div class="stat-badge">Quality: ${m.torrents[0].quality}</div>
+            <div class="stat-badge">Size: ${m.torrents[0].size}</div>
         `;
 
-        // Используем код IMDb для подключения плеера
-        document.getElementById('mainPlayer').src = `https://vidsrc.to/embed/movie/${movie.imdb_code}`;
+        // Плеер (Vidsrc через IMDb ID)
+        document.getElementById('mainPlayer').src = `https://vidsrc.to/embed/movie/${m.imdb_code}`;
+        
         modal.style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
@@ -198,22 +265,12 @@
 
     function handleSearch(e) {
         if (e.key === 'Enter') {
-            loadMovies('all', e.target.value);
-            document.getElementById('listTitle').innerText = 'Search Results';
+            loadMovies('all', null, e.target.value);
         }
     }
 
-    // Инициализация
+    // Start
     loadMovies();
-
-    // Переключение кнопок жанров
-    document.querySelectorAll('.genre-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            document.getElementById('listTitle').innerText = this.innerText;
-        });
-    });
 </script>
 </body>
 </html>
