@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitMovie OS | Terminal v3.0</title>
+    <title>GitMovie OS / Terminal v4.0</title>
     <style>
         :root {
             --bg: #0d1117; --side: #010409; --card: #161b22; --border: #30363d;
-            --text: #c9d1d9; --muted: #8b949e; --accent: #238636; --blue: #58a6ff; --yellow: #f1e05a;
+            --text: #c9d1d9; --muted: #8b949e; --accent: #238636; --blue: #58a6ff; --yellow: #f1e05a; --error: #f85149;
         }
         body {
             background: var(--bg); color: var(--text);
@@ -16,205 +16,195 @@
         }
 
         /* Sidebar */
-        aside {
-            width: 260px; background: var(--side); border-right: 1px solid var(--border);
-            display: flex; flex-direction: column; flex-shrink: 0;
-        }
-        .side-header { padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 18px; }
+        aside { width: 240px; background: var(--side); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .side-header { padding: 20px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 16px; color: var(--blue); }
         .side-nav { padding: 10px; overflow-y: auto; flex-grow: 1; }
         .nav-item { 
-            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; 
-            margin-bottom: 2px; color: var(--muted); transition: 0.2s;
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; 
+            margin-bottom: 2px; color: var(--muted); transition: 0.15s;
         }
         .nav-item:hover { background: var(--card); color: var(--text); }
-        .nav-item.active { background: var(--card); color: var(--blue); font-weight: 600; border-left: 3px solid var(--blue); }
+        .nav-item.active { background: #1f2937; color: var(--blue); font-weight: 600; }
 
-        /* Main Content */
-        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-        
-        header {
-            padding: 12px 20px; background: var(--bg); border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
+        /* Main */
+        main { flex-grow: 1; display: flex; flex-direction: column; background: var(--bg); }
+        header { 
+            padding: 10px 20px; border-bottom: 1px solid var(--border); 
+            display: flex; justify-content: space-between; align-items: center; background: var(--bg);
         }
-        .search-container { position: relative; width: 50%; }
+        .search-wrap { width: 60%; position: relative; }
         input#search {
             width: 100%; background: var(--side); border: 1px solid var(--border);
-            padding: 8px 12px; color: white; border-radius: 6px; outline: none;
+            padding: 7px 12px; color: white; border-radius: 6px; outline: none; font-size: 14px;
         }
+        input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(88,166,255,0.1); }
 
-        .lang-switch { display: flex; gap: 5px; }
-        .lang-btn { 
-            background: var(--card); border: 1px solid var(--border); color: var(--muted);
-            padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;
+        .btn-group { display: flex; gap: 8px; }
+        .btn { 
+            background: var(--card); border: 1px solid var(--border); color: var(--text);
+            padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600;
         }
-        .lang-btn.active { color: var(--blue); border-color: var(--blue); }
+        .btn.active { border-color: var(--blue); color: var(--blue); }
 
-        /* Content Area */
-        .content { padding: 20px; overflow-y: auto; }
-        .movie-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 20px;
-        }
-
-        /* Movie Card */
-        .card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 6px; overflow: hidden; transition: 0.2s; cursor: pointer;
+        /* Grid */
+        .content { padding: 20px; overflow-y: auto; flex-grow: 1; }
+        .movie-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; }
+        
+        .card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 6px; 
+            overflow: hidden; transition: 0.2s; cursor: pointer; position: relative;
         }
         .card:hover { border-color: var(--muted); transform: translateY(-3px); }
-        .card img { width: 100%; height: 260px; object-fit: cover; }
+        .card img { width: 100%; height: 240px; object-fit: cover; background: #000; }
         .card-body { padding: 10px; }
-        .card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 5px; }
+        .card-title { font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 4px; }
 
-        /* Modal Player */
-        .modal {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); z-index: 2000; padding: 40px; box-sizing: border-box;
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; backdrop-filter: blur(4px); }
+        .modal-content { 
+            max-width: 1000px; margin: 2% auto; background: var(--bg); border: 1px solid var(--border); 
+            border-radius: 8px; height: 90vh; display: flex; flex-direction: column;
         }
-        .modal-inner {
-            max-width: 1100px; margin: 0 auto; background: var(--bg);
-            border: 1px solid var(--border); border-radius: 12px; height: 90vh;
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-        .modal-body { display: flex; padding: 20px; gap: 20px; overflow-y: auto; }
-        .modal-left { width: 300px; flex-shrink: 0; }
-        .modal-right { flex-grow: 1; }
+        .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 20px; overflow-y: auto; display: flex; gap: 20px; flex-wrap: wrap; }
         
-        .player-box { background: #000; width: 100%; aspect-ratio: 16/9; margin-top: 20px; border-radius: 8px; }
+        .player-area { flex-grow: 1; min-width: 300px; }
+        .iframe-container { background: #000; border-radius: 8px; aspect-ratio: 16/9; position: relative; overflow: hidden; border: 1px solid var(--border); }
         iframe { width: 100%; height: 100%; border: none; }
 
-        .stat-badge {
-            display: inline-block; padding: 4px 10px; border-radius: 4px;
-            background: var(--card); border: 1px solid var(--border);
-            font-size: 12px; margin-right: 8px; margin-bottom: 8px;
-        }
+        .movie-sidebar { width: 250px; }
+        .tag { background: #21262d; padding: 3px 8px; border-radius: 12px; font-size: 11px; margin: 0 4px 4px 0; display: inline-block; }
 
-        /* Loader */
-        .loader { text-align: center; color: var(--blue); font-family: monospace; padding: 40px; }
+        .loader { text-align: center; color: var(--blue); font-family: monospace; padding: 50px; }
+        .error-msg { color: var(--error); padding: 20px; border: 1px solid var(--error); border-radius: 6px; text-align: center; }
     </style>
 </head>
 <body>
 
 <aside>
-    <div class="side-header">GitMovie_v3</div>
-    <div class="side-nav" id="genreNav">
-        <div style="font-size: 12px; color: var(--muted); padding: 10px;">BROWSE BY GENRE</div>
-        <div class="nav-item active" onclick="loadMovies('all', this)">All Releases</div>
-        <div class="nav-item" onclick="loadMovies('action', this)">Action</div>
-        <div class="nav-item" onclick="loadMovies('sci-fi', this)">Sci-Fi</div>
-        <div class="nav-item" onclick="loadMovies('drama', this)">Drama</div>
-        <div class="nav-item" onclick="loadMovies('horror', this)">Horror</div>
-        <div class="nav-item" onclick="loadMovies('thriller', this)">Thriller</div>
-        <div class="nav-item" onclick="loadMovies('comedy', this)">Comedy</div>
-        <div class="nav-item" onclick="loadMovies('animation', this)">Animation</div>
-        <div style="font-size: 12px; color: var(--muted); padding: 10px; margin-top: 10px;">NETWORK</div>
-        <div class="nav-item" onclick="alert('Switching to TV Series Node...')">TV Series</div>
+    <div class="side-header">GIT_MOVIE_TERMINAL</div>
+    <div class="side-nav">
+        <div style="font-size: 11px; color: var(--muted); padding: 10px;">OBJECT_GENRES</div>
+        <div class="nav-item active" onclick="fetchData('all', this)">All_Releases</div>
+        <div class="nav-item" onclick="fetchData('sci-fi', this)">Sci-Fi</div>
+        <div class="nav-item" onclick="fetchData('action', this)">Action</div>
+        <div class="nav-item" onclick="fetchData('drama', this)">Drama</div>
+        <div class="nav-item" onclick="fetchData('horror', this)">Horror</div>
+        <div class="nav-item" onclick="fetchData('animation', this)">Animation</div>
     </div>
 </aside>
 
 <main>
     <header>
-        <div class="search-container">
-            <input type="text" id="search" placeholder="Search data..." onkeypress="handleSearch(event)">
+        <div class="search-wrap">
+            <input type="text" id="search" placeholder="Search..." onkeypress="if(event.key==='Enter') search()">
         </div>
-        <div class="lang-switch">
-            <button class="lang-btn active" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        <div class="btn-group">
+            <button class="btn active" id="btn-en" onclick="changeLang('en')">EN</button>
+            <button class="btn" id="btn-ru" onclick="changeLang('ru')">RU</button>
         </div>
     </header>
 
     <div class="content">
-        <div id="loader" class="loader" style="display:none;">> INITIALIZING_DATA_STREAM...</div>
-        <div class="movie-grid" id="movieGrid"></div>
+        <div id="loader" class="loader">> ACCESSING_DATA_STREAM...</div>
+        <div id="error" class="error-msg" style="display:none;"></div>
+        <div class="movie-grid" id="grid"></div>
     </div>
 </main>
 
 <div id="modal" class="modal">
-    <div class="modal-inner">
-        <header style="border-radius: 12px 12px 0 0;">
-            <div id="mTitle" style="font-weight: bold;"></div>
-            <button onclick="closeModal()" style="background:none; border:none; color:white; cursor:pointer; font-size:20px;">×</button>
-        </header>
+    <div class="modal-content">
+        <div class="modal-header">
+            <div id="m-title" style="font-weight:bold">Movie Title</div>
+            <button class="btn" onclick="closeModal()">Close_X</button>
+        </div>
         <div class="modal-body">
-            <div class="modal-left">
-                <img id="mPoster" src="" style="width:100%; border-radius:8px; border:1px solid var(--border);">
-                <div id="mStats" style="margin-top: 15px;"></div>
+            <div class="movie-sidebar">
+                <img id="m-poster" src="" style="width:100%; border-radius:6px; border:1px solid var(--border);">
+                <div id="m-info" style="margin-top:15px; font-size:13px;"></div>
             </div>
-            <div class="modal-right">
-                <div style="font-size: 12px; color: var(--muted); margin-bottom: 10px;" id="mYear"></div>
-                <p id="mDesc" style="font-size: 14px; line-height: 1.6; color: var(--muted);"></p>
-                
-                <div class="player-box">
-                    <iframe id="mainPlayer" src="" allowfullscreen></iframe>
+            <div class="player-area">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span id="m-year" style="color:var(--muted); font-size:14px;"></span>
+                    <button class="btn" onclick="switchServer()" style="border-color:var(--yellow); color:var(--yellow)">⇄ Switch Server</button>
                 </div>
-                
-                <div style="margin-top: 20px;">
-                    <h4 id="labelComments">System Log / Reviews</h4>
-                    <div style="background: var(--side); padding: 15px; border-radius: 6px; font-size: 13px; color: var(--muted); border: 1px dashed var(--border);">
-                        [AUTH_REQUIRED] Please sign in with GitHub to pull/push comments.
-                    </div>
+                <div class="iframe-container">
+                    <iframe id="player" src="" allowfullscreen></iframe>
                 </div>
+                <p id="m-desc" style="font-size:14px; line-height:1.6; color:var(--muted); margin-top:15px;"></p>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Переводы
     const i18n = {
-        en: {
-            search: "Search database...",
-            loading: "> INITIALIZING_DATA_STREAM...",
-            comments: "System Log / Reviews",
-            noDesc: "No description available in the database."
-        },
-        ru: {
-            search: "Поиск в базе данных...",
-            loading: "> ИНИЦИАЛИЗАЦИЯ ПОТОКА ДАННЫХ...",
-            comments: "Системный лог / Отзывы",
-            noDesc: "Описание отсутствует в базе данных."
-        }
+        en: { search: "Search database...", loading: "> ACCESSING_DATA_STREAM...", error: "Connection Timeout. Retrying with fallback...", switch: "Switch Server" },
+        ru: { search: "Поиск в базе данных...", loading: "> ДОСТУП К ПОТОКУ ДАННЫХ...", error: "Тайм-аут. Пробую резервный сервер...", switch: "Сменить сервер" }
     };
 
-    let currentLang = 'en';
+    let lang = 'en';
+    let currentMovieImdb = '';
+    let serverIndex = 0;
+    const proxies = [
+        'https://api.allorigins.win/get?url=',
+        'https://corsproxy.io/?'
+    ];
 
-    function setLang(lang) {
-        currentLang = lang;
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase() === lang));
-        document.getElementById('search').placeholder = i18n[lang].search;
-        document.getElementById('labelComments').innerText = i18n[lang].comments;
+    function changeLang(l) {
+        lang = l;
+        document.getElementById('btn-en').classList.toggle('active', l==='en');
+        document.getElementById('btn-ru').classList.toggle('active', l==='ru');
+        document.getElementById('search').placeholder = i18n[l].search;
     }
 
-    async function loadMovies(genre = 'all', el = null, query = '') {
-        const grid = document.getElementById('movieGrid');
+    async function fetchData(genre = 'all', el = null, query = '') {
+        const grid = document.getElementById('grid');
         const loader = document.getElementById('loader');
-        
+        const errDiv = document.getElementById('error');
+
         if(el) {
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
 
         grid.innerHTML = '';
+        errDiv.style.display = 'none';
         loader.style.display = 'block';
-        
-        let url = `https://yts.mx/api/v2/list_movies.json?limit=30&sort_by=seeds`;
-        if (genre !== 'all') url += `&genre=${genre}`;
-        if (query) url += `&query_term=${encodeURIComponent(query)}`;
 
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            if (data.data.movies) display(data.data.movies);
-        } catch (e) {
-            grid.innerHTML = '<div style="color:red">ERROR: Connection timed out.</div>';
-        } finally {
-            loader.style.display = 'none';
+        let target = `https://yts.mx/api/v2/list_movies.json?limit=32&sort_by=seeds`;
+        if(genre !== 'all') target += `&genre=${genre}`;
+        if(query) target += `&query_term=${encodeURIComponent(query)}`;
+
+        // Пытаемся загрузить через несколько прокси автоматически
+        let success = false;
+        for (let proxy of proxies) {
+            try {
+                const res = await fetch(proxy + encodeURIComponent(target));
+                const json = await res.json();
+                const data = proxy.includes('allorigins') ? JSON.parse(json.contents) : json;
+                
+                if(data.data.movies) {
+                    render(data.data.movies);
+                    success = true;
+                    break;
+                }
+            } catch (e) {
+                console.log("Proxy failed, trying next...");
+            }
+        }
+
+        loader.style.display = 'none';
+        if(!success) {
+            errDiv.innerText = "[CRITICAL_ERROR]: All data nodes are unreachable. Check your VPN/Network.";
+            errDiv.style.display = 'block';
         }
     }
 
-    function display(movies) {
-        const grid = document.getElementById('movieGrid');
+    function render(movies) {
+        window.cachedMovies = movies;
+        const grid = document.getElementById('grid');
         movies.forEach(m => {
             grid.innerHTML += `
                 <div class="card" onclick="openMovie(${m.id})">
@@ -229,48 +219,52 @@
                 </div>
             `;
         });
-        // Сохраним данные в глобальную переменную для быстрого доступа
-        window.currentMovies = movies;
     }
 
     function openMovie(id) {
-        const m = window.currentMovies.find(x => x.id === id);
-        const modal = document.getElementById('modal');
-        
-        document.getElementById('mTitle').innerText = m.title;
-        document.getElementById('mPoster').src = m.large_cover_image;
-        document.getElementById('mYear').innerText = `Released: ${m.year} | Duration: ${m.runtime} min | Language: ${m.language}`;
-        document.getElementById('mDesc').innerText = m.description_full || i18n[currentLang].noDesc;
-        
-        // Статистика
-        document.getElementById('mStats').innerHTML = `
-            <div class="stat-badge">IMDb: ${m.rating}</div>
-            <div class="stat-badge">Likes: ${m.like_count}</div>
-            <div class="stat-badge">Quality: ${m.torrents[0].quality}</div>
-            <div class="stat-badge">Size: ${m.torrents[0].size}</div>
+        const m = window.cachedMovies.find(x => x.id === id);
+        currentMovieImdb = m.imdb_code;
+        serverIndex = 0;
+
+        document.getElementById('m-title').innerText = m.title;
+        document.getElementById('m-poster').src = m.large_cover_image;
+        document.getElementById('m-year').innerText = `${m.year} | ${m.runtime} min | ${m.language.toUpperCase()}`;
+        document.getElementById('m-desc').innerText = m.description_full || "No data.";
+        document.getElementById('m-info').innerHTML = `
+            <div class="tag">IMDb: ${m.rating}</div>
+            <div class="tag">Size: ${m.torrents[0].size}</div>
+            <div class="tag">Seeds: ${m.torrents[0].seeds}</div>
         `;
 
-        // Плеер (Vidsrc через IMDb ID)
-        document.getElementById('mainPlayer').src = `https://vidsrc.to/embed/movie/${m.imdb_code}`;
-        
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
+        loadPlayer();
+        document.getElementById('modal').style.display = 'block';
+    }
+
+    function loadPlayer() {
+        const servers = [
+            `https://vidsrc.to/embed/movie/${currentMovieImdb}`,
+            `https://vidsrc.me/embed/movie?imdb=${currentMovieImdb}`,
+            `https://embed.su/embed/movie/${currentMovieImdb}`
+        ];
+        document.getElementById('player').src = servers[serverIndex];
+    }
+
+    function switchServer() {
+        serverIndex = (serverIndex + 1) % 3;
+        loadPlayer();
     }
 
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
-        document.getElementById('mainPlayer').src = '';
-        document.body.style.overflow = 'auto';
+        document.getElementById('player').src = '';
     }
 
-    function handleSearch(e) {
-        if (e.key === 'Enter') {
-            loadMovies('all', null, e.target.value);
-        }
+    function search() {
+        fetchData('all', null, document.getElementById('search').value);
     }
 
-    // Start
-    loadMovies();
+    // Init
+    fetchData();
 </script>
 </body>
 </html>
