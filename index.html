@@ -3,441 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS OSINT | Enterprise Intelligence Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+    <title>NEXUS OSINT | Neural Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #0d1117;
             --bg-canvas: #010409;
             --bg-card: #161b22;
-            --border-default: #30363d;
-            --text-main: #e6edf3;
-            --text-secondary: #7d8590;
+            --border: #30363d;
             --accent: #2f81f7;
+            --text: #e6edf3;
+            --text-muted: #7d8590;
             --success: #3fb950;
-            --danger: #f85149;
-            --warning: #d29922;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* --- Sidebar --- */
+        /* Sidebar */
         aside {
-            width: 260px;
-            background-color: var(--bg-canvas);
-            border-right: 1px solid var(--border-default);
+            width: 280px;
+            background: var(--bg-canvas);
+            border-right: 1px solid var(--border);
+            padding: 25px;
             display: flex;
             flex-direction: column;
-            padding: 24px 16px;
         }
 
-        .brand {
+        .logo {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 20px;
+            margin-bottom: 40px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 32px;
-            color: var(--accent);
-        }
-
-        .nav-group { margin-bottom: 24px; }
-        .nav-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            padding-left: 8px;
-            text-transform: uppercase;
+            gap: 10px;
         }
 
         .nav-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 14px;
+            padding: 10px 15px;
             border-radius: 6px;
-            margin-bottom: 4px;
-            transition: 0.2s;
             cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: var(--text-muted);
         }
 
         .nav-item:hover, .nav-item.active {
-            background-color: rgba(177, 186, 196, 0.12);
-            color: var(--accent);
+            background: #21262d;
+            color: var(--text);
         }
 
-        /* --- Main Content --- */
+        /* Main */
         main {
             flex: 1;
-            overflow-y: auto;
-            background-color: var(--bg-main);
             padding: 40px;
+            overflow-y: auto;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; }
+        .container { max-width: 1000px; margin: 0 auto; }
 
-        .search-container {
+        .header { margin-bottom: 30px; }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+
+        /* Search Engine UI */
+        .search-box {
             background: var(--bg-card);
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border);
+            padding: 20px;
             border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 32px;
+            margin-bottom: 30px;
         }
 
         .input-group {
             display: flex;
-            gap: 12px;
             background: var(--bg-canvas);
-            padding: 8px;
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border);
             border-radius: 8px;
+            overflow: hidden;
         }
 
         input {
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-main);
+            color: var(--text);
+            padding: 15px;
             font-family: 'JetBrains Mono', monospace;
-            padding: 8px 12px;
             outline: none;
-            font-size: 15px;
         }
 
-        button.primary {
-            background-color: var(--accent);
+        button.search-btn {
+            background: var(--accent);
             color: white;
-            border: 1px solid rgba(240, 246, 252, 0.1);
-            padding: 8px 20px;
-            border-radius: 6px;
-            font-weight: 500;
+            border: none;
+            padding: 0 30px;
+            font-weight: 600;
             cursor: pointer;
         }
 
-        button.primary:hover { background-color: #388bfd; }
-
-        /* --- Dashboard Grid --- */
-        .grid {
+        /* Social Mapper Grid */
+        .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
         }
 
-        .card {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-default);
+        .social-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 15px;
             border-radius: 8px;
-            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             transition: 0.2s;
         }
 
-        .card:hover { border-color: var(--text-secondary); }
+        .social-card:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .tag {
+        .social-name { font-weight: 600; font-size: 14px; }
+        .btn-go {
             font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 12px;
-            background: rgba(47, 129, 247, 0.1);
             color: var(--accent);
+            text-decoration: none;
             border: 1px solid var(--accent);
+            padding: 3px 8px;
+            border-radius: 4px;
         }
 
-        .link-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border-default);
-            font-size: 14px;
+        .btn-go:hover { background: var(--accent); color: white; }
+
+        /* Status Badge */
+        .badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: rgba(63, 185, 80, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
         }
 
-        .link-row a { color: var(--accent); text-decoration: none; }
-        .link-row span { color: var(--text-secondary); }
-
-        /* --- Live Terminal --- */
+        /* Console */
         .console {
-            background: var(--bg-canvas);
-            border: 1px solid var(--border-default);
+            background: #000;
+            padding: 15px;
             border-radius: 8px;
-            padding: 16px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            height: 200px;
-            overflow-y: auto;
-            margin-bottom: 30px;
+            font-size: 12px;
             color: #8b949e;
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Tool specific UI */
-        .tool-box { margin-top: 20px; }
-        textarea {
-            width: 100%;
-            background: var(--bg-canvas);
-            border: 1px solid var(--border-default);
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            margin-bottom: 10px;
+            height: 150px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
         }
     </style>
 </head>
 <body>
 
     <aside>
-        <div class="brand">
-            <svg height="32" viewBox="0 0 16 16" width="32" fill="currentColor"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
+        <div class="logo">
+            <svg height="24" viewBox="0 0 16 16" width="24" fill="currentColor"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
             NEXUS OSINT
         </div>
-
-        <div class="nav-group">
-            <div class="nav-label">Intelligence</div>
-            <div class="nav-item active" onclick="switchTab('dashboard')">Universal Search</div>
-            <div class="nav-item" onclick="switchTab('github-tools')">GitHub Arsenal</div>
-        </div>
-
-        <div class="nav-group">
-            <div class="nav-label">Analysis Tools</div>
-            <div class="nav-item" onclick="switchTab('dev-tools')">Local Decoder</div>
-            <div class="nav-item" onclick="switchTab('metadata')">Image Metadata</div>
-        </div>
+        <div class="nav-item active">Social Identity Mapper</div>
+        <div class="nav-item">Network Analysis</div>
+        <div class="nav-item">Domain Intel</div>
+        <div class="nav-item">Crypto Tracking</div>
+        <div style="margin-top: auto; color: #333; font-size: 11px;">Powered by OpenSource Intelligence</div>
     </aside>
 
     <main>
-        <div id="dashboard" class="tab-content active">
-            <div class="container">
-                <div class="search-container">
-                    <h2 style="margin-bottom: 12px;">Universal OSINT Explorer</h2>
-                    <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 20px;">
-                        Введите любую информацию для глубокого анализа цифровых следов.
-                    </p>
-                    <div class="input-group">
-                        <input type="text" id="mainInput" placeholder="Nickname, Email, IP, Phone, BTC address..." spellcheck="false">
-                        <button class="primary" onclick="startGlobalSearch()">Execute Analysis</button>
-                    </div>
-                </div>
-
-                <div id="liveConsole" class="console">
-                    [SYSTEM] System initialized. Waiting for input...
-                </div>
-
-                <div id="resultsGrid" class="grid">
-                    </div>
+        <div class="container">
+            <div class="header">
+                <h1>Social Identity Mapper</h1>
+                <p style="color: var(--text-muted)">Имитация Sherlock/Maigret: проверка присутствия никнейма в глобальных сетях.</p>
             </div>
-        </div>
 
-        <div id="github-tools" class="tab-content">
-            <div class="container">
-                <h2 style="margin-bottom: 24px;">Professional GitHub Toolkit</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Sherlock</h3>
-                        <p style="color:var(--text-secondary); font-size: 13px; margin: 10px 0;">Поиск аккаунтов по 400+ сервисам.</p>
-                        <div class="console" style="height: 60px; margin: 10px 0;">python3 sherlock [target]</div>
-                        <a href="https://github.com/sherlock-project/sherlock" target="_blank" class="primary" style="display:inline-block; text-decoration:none;">View Repository</a>
-                    </div>
-                    <div class="card">
-                        <h3>Maigret</h3>
-                        <p style="color:var(--text-secondary); font-size: 13px; margin: 10px 0;">Глубокий анализ профилей с отчетами.</p>
-                        <div class="console" style="height: 60px; margin: 10px 0;">maigret [target]</div>
-                        <a href="https://github.com/soxoj/maigret" target="_blank" class="primary" style="display:inline-block; text-decoration:none;">View Repository</a>
-                    </div>
+            <div class="search-box">
+                <div class="input-group">
+                    <input type="text" id="nickInput" placeholder="Введите никнейм (например, elonmusk)..." spellcheck="false">
+                    <button class="search-btn" onclick="startSocialScan()">RUN SCAN</button>
                 </div>
             </div>
-        </div>
 
-        <div id="dev-tools" class="tab-content">
-            <div class="container">
-                <h2>Quick Decoder / Encoder</h2>
-                <div class="tool-box">
-                    <textarea id="toolInput" rows="5" placeholder="Введите текст или Base64..."></textarea>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="primary" onclick="processLocal('b64-dec')">Base64 Decode</button>
-                        <button class="primary" onclick="processLocal('b64-enc')">Base64 Encode</button>
-                        <button class="primary" onclick="processLocal('sha')">SHA-256 Hash</button>
-                    </div>
-                    <div id="toolOutput" class="console" style="margin-top: 20px; height: auto; min-height: 100px;"></div>
-                </div>
+            <div id="console" class="console">
+                [SYSTEM] Ready for deployment...
             </div>
-        </div>
 
-        <div id="metadata" class="tab-content">
-            <div class="container">
-                <h2>Image Metadata (EXIF) Reader</h2>
-                <div class="search-container" style="border: 2px dashed var(--border-default); text-align: center;">
-                    <input type="file" id="imageLoader" accept="image/*" onchange="readExif(this)" style="display: none;">
-                    <label for="imageLoader" style="cursor: pointer;">
-                        Нажмите здесь или перетащите фото для анализа метаданных
-                    </label>
+            <div id="results" class="results-grid">
                 </div>
-                <div id="exifResults" class="console" style="height: 400px;"></div>
-            </div>
         </div>
     </main>
 
     <script>
-        const logWindow = document.getElementById('liveConsole');
+        const services = [
+            { name: "Instagram", url: "https://www.instagram.com/{}" },
+            { name: "GitHub", url: "https://github.com/{}" },
+            { name: "Twitter / X", url: "https://twitter.com/{}" },
+            { name: "Reddit", url: "https://www.reddit.com/user/{}" },
+            { name: "TikTok", url: "https://www.tiktok.com/@{}" },
+            { name: "Telegram", url: "https://t.me/{}" },
+            { name: "Pinterest", url: "https://www.pinterest.com/{}/" },
+            { name: "Steam", url: "https://steamcommunity.com/id/{}" },
+            { name: "Twitch", url: "https://www.twitch.tv/{}" },
+            { name: "Discord (Search)", url: "https://discord.com/search?q={}" },
+            { name: "Spotify", url: "https://open.spotify.com/user/{}" },
+            { name: "Behance", url: "https://www.behance.net/{}" },
+            { name: "Dribbble", url: "https://dribbble.com/{}" },
+            { name: "Medium", url: "https://medium.com/@{}" },
+            { name: "VK (Vkontakte)", url: "https://vk.com/{}" },
+            { name: "OK.ru", url: "https://ok.ru/{}" },
+            { name: "eBay", url: "https://www.ebay.com/usr/{}" },
+            { name: "Patreon", url: "https://www.patreon.com/{}" },
+            { name: "SoundCloud", url: "https://soundcloud.com/{}" },
+            { name: "Chess.com", url: "https://www.chess.com/member/{}" }
+        ];
 
         function log(msg) {
-            const time = new Date().toLocaleTimeString();
-            logWindow.innerHTML += `<div><span style="color: var(--text-secondary)">[${time}]</span> ${msg}</div>`;
-            logWindow.scrollTop = logWindow.scrollHeight;
+            const c = document.getElementById('console');
+            c.innerHTML += `<div><span style="color:var(--success)">[OK]</span> ${msg}</div>`;
+            c.scrollTop = c.scrollHeight;
         }
 
-        function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
+        function startSocialScan() {
+            const nick = document.getElementById('nickInput').value.trim();
+            const results = document.getElementById('results');
+            const consoleBox = document.getElementById('console');
 
-        async function startGlobalSearch() {
-            const val = document.getElementById('mainInput').value.trim();
-            const grid = document.getElementById('resultsGrid');
-            if(!val) return;
+            if (!nick) return;
 
-            grid.innerHTML = '';
-            log(`Starting scan for: <strong>${val}</strong>`);
+            results.innerHTML = '';
+            consoleBox.innerHTML = `[INIT] Starting emulation of Sherlock scan for: ${nick}...`;
 
-            const type = detectType(val);
-            log(`Identified target as: <span style="color: var(--accent)">${type}</span>`);
-
-            // 1. IP API (Live)
-            if(type === 'IP') {
-                log('Fetching IP Geo-location data...');
-                try {
-                    const res = await fetch(`http://ip-api.com/json/${val}`);
-                    const data = await res.json();
-                    renderCard('Geo Intelligence', [
-                        {name: 'Country', val: data.country},
-                        {name: 'ISP', val: data.isp},
-                        {name: 'City', val: data.city},
-                        {name: 'Org', val: data.org}
-                    ]);
-                } catch(e) { log('IP API failed (CORS or Network)'); }
-            }
-
-            // 2. Blockchain API (Live)
-            if(type === 'CRYPTO') {
-                log('Querying Blockchain.info for balance...');
-                try {
-                    const res = await fetch(`https://blockchain.info/rawaddr/${val}`);
-                    const data = await res.json();
-                    renderCard('Crypto Ledger', [
-                        {name: 'Balance', val: (data.final_balance / 100000000).toFixed(8) + ' BTC'},
-                        {name: 'Total Recv', val: (data.total_received / 100000000).toFixed(8)},
-                        {name: 'TX Count', val: data.n_tx}
-                    ]);
-                } catch(e) { log('Crypto API failed'); }
-            }
-
-            // 3. GitHub Search
-            if(type === 'NICKNAME') {
-                log('Checking GitHub user database...');
-                try {
-                    const res = await fetch(`https://api.github.com/users/${val}`);
-                    if(res.ok) {
-                        const data = await res.json();
-                        renderCard('GitHub Identity', [
-                            {name: 'Name', val: data.name || 'N/A'},
-                            {name: 'Public Repos', val: data.public_repos},
-                            {name: 'Followers', val: data.followers},
-                            {name: 'Link', val: `<a href="${data.html_url}" target="_blank">Profile</a>`}
-                        ]);
-                    }
-                } catch(e) {}
-            }
-
-            // Standard Deep Links
-            renderStandardLinks(val, type);
-        }
-
-        function detectType(val) {
-            if(val.includes('@')) return 'EMAIL';
-            if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(val)) return 'IP';
-            if(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(val)) return 'CRYPTO';
-            if(val.includes('.') && val.length > 5) return 'DOMAIN';
-            return 'NICKNAME';
-        }
-
-        function renderCard(title, data) {
-            const grid = document.getElementById('resultsGrid');
-            const card = document.createElement('div');
-            card.className = 'card';
-            let content = data.map(d => `
-                <div class="link-row">
-                    <span>${d.name}</span>
-                    <span style="color: var(--text-main)">${d.val}</span>
-                </div>`).join('');
-            
-            card.innerHTML = `<div class="card-header"><h3>${title}</h3><span class="tag">LIVE API</span></div>${content}`;
-            grid.appendChild(card);
-        }
-
-        function renderStandardLinks(val, type) {
-            const links = {
-                'EMAIL': [{name: 'Epieos', url: `https://epieos.com/?q=${val}`}, {name: 'IntelX', url: `https://intelx.io/?s=${val}`}],
-                'IP': [{name: 'Shodan', url: `https://www.shodan.io/host/${val}`}, {name: 'Censys', url: `https://search.censys.io/hosts/${val}`}],
-                'DOMAIN': [{name: 'Whois', url: `https://whois.domaintools.com/${val}`}, {name: 'SecurityTrails', url: `https://securitytrails.com/domain/${val}`}]
-            };
-
-            if(links[type]) {
-                const grid = document.getElementById('resultsGrid');
-                const card = document.createElement('div');
-                card.className = 'card';
-                let content = links[type].map(l => `
-                    <div class="link-row">
-                        <span>External Tool</span>
-                        <a href="${l.url}" target="_blank">${l.name} →</a>
-                    </div>`).join('');
-                card.innerHTML = `<div class="card-header"><h3>Deep Search</h3><span class="tag">Links</span></div>${content}`;
-                grid.appendChild(card);
-            }
-        }
-
-        // --- LOCAL TOOLS LOGIC ---
-        async function processLocal(action) {
-            const input = document.getElementById('toolInput').value;
-            const output = document.getElementById('toolOutput');
-            if(action === 'b64-dec') output.innerText = atob(input);
-            if(action === 'b64-enc') output.innerText = btoa(input);
-            if(action === 'sha') {
-                const msgUint8 = new TextEncoder().encode(input);
-                const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-                const hashArray = Array.from(new Uint8Array(hashBuffer));
-                output.innerText = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-            }
-        }
-
-        // --- EXIF LOGIC ---
-        function readExif(input) {
-            const out = document.getElementById('exifResults');
-            out.innerHTML = "Reading EXIF data...";
-            EXIF.getData(input.files[0], function() {
-                const allData = EXIF.getAllTags(this);
-                out.innerHTML = JSON.stringify(allData, null, 2) || "No EXIF data found.";
+            services.forEach((service, index) => {
+                setTimeout(() => {
+                    const finalUrl = service.url.replace('{}', nick);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'social-card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="social-name">${service.name}</div>
+                            <span class="badge">ACTIVE LINK</span>
+                        </div>
+                        <a href="${finalUrl}" target="_blank" class="btn-go">VISIT</a>
+                    `;
+                    results.appendChild(card);
+                    log(`Generated link for ${service.name}`);
+                }, index * 50); // Эффект постепенной загрузки как в терминале
             });
         }
     </script>
