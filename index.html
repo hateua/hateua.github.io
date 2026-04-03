@@ -2,362 +2,272 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>VOID INTELLIGENCE | OSINT NODE 9.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Downloader Pro / GitHub Style</title>
     <style>
         :root {
-            --bg: #000000;
-            --surface: #0a0a0a;
-            --surface-bright: #111111;
-            --border: #1a1a1a;
-            --accent: #00e5ff;
-            --accent-dim: rgba(0, 229, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: #666666;
-            --success: #00ff41;
-            --danger: #ff003c;
+            --color-bg: #0d1117;
+            --color-sec-bg: #161b22;
+            --color-border: #30363d;
+            --color-text: #c9d1d9;
+            --color-text-muted: #8b949e;
+            --color-accent: #238636;
+            --color-accent-hover: #2ea043;
+            --color-blue: #58a6ff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            margin: 0;
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            background-color: var(--color-sec-bg);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* Main Section */
+        .main-card {
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
             overflow: hidden;
         }
 
-        /* --- NAVIGATION --- */
-        nav {
-            width: 80px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            gap: 30px;
-        }
-
-        .nav-icon {
-            width: 40px; height: 40px;
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .nav-icon:hover, .nav-icon.active { background: var(--accent-dim); color: var(--accent); }
-
-        /* --- SIDEBAR (DOSSIER LIST) --- */
-        aside {
-            width: 320px;
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-        }
-
-        .sidebar-header { font-weight: 700; font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 25px; }
-        .target-card {
-            background: var(--surface-bright);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-        }
-        .target-id { font-family: 'JetBrains Mono'; font-size: 12px; color: var(--accent); margin-bottom: 5px; }
-        .target-val { font-weight: 600; font-size: 14px; word-break: break-all; }
-
-        /* --- MAIN VIEW --- */
-        main { flex: 1; display: flex; flex-direction: column; padding: 40px; overflow-y: auto; }
-
-        .search-container { max-width: 1000px; width: 100%; margin: 0 auto; }
-        
-        .omni-bar {
-            background: var(--surface-bright);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 10px 20px;
+        .card-header {
+            background-color: var(--color-sec-bg);
+            padding: 16px;
+            border-bottom: 1px solid var(--color-border);
             display: flex;
             align-items: center;
-            gap: 20px;
-            transition: 0.4s;
-            margin-bottom: 40px;
+            gap: 8px;
         }
-        .omni-bar:focus-within { border-color: var(--accent); box-shadow: 0 0 40px var(--accent-dim); }
 
-        input {
+        .card-body {
+            padding: 24px;
+        }
+
+        /* Input Group */
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
             flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 18px;
+            background-color: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: var(--color-text);
+            font-size: 14px;
             outline: none;
         }
 
-        button.scan-btn {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            font-weight: 700;
+        input[type="text"]:focus {
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+        }
+
+        button {
+            background-color: var(--color-accent);
+            color: white;
+            border: 1px solid rgba(27, 31, 36, 0.15);
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-weight: 600;
             cursor: pointer;
-            text-transform: uppercase;
-            font-size: 12px;
+            transition: 0.2s;
         }
 
-        /* --- DOSSIER MODULES --- */
-        .dossier-layout {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+        button:hover {
+            background-color: var(--color-accent-hover);
         }
 
-        .module {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px;
-            animation: fadeIn 0.5s ease forwards;
+        /* Results Table */
+        .results {
+            display: none; /* Скрыто до нажатия */
+            margin-top: 20px;
+            border-top: 1px solid var(--color-border);
         }
 
-        .full-width { grid-column: span 2; }
-
-        .module-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 25px; border-bottom: 1px solid #1a1a1a; padding-bottom: 15px;
+        .file-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--color-border);
+            transition: 0.1s;
         }
-        .module-title { font-family: 'JetBrains Mono'; font-weight: 700; color: var(--accent); font-size: 11px; text-transform: uppercase; }
 
-        .data-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #111; font-size: 13px; }
-        .data-label { color: var(--text-dim); }
-        .data-value { font-family: 'JetBrains Mono'; text-align: right; }
-        .data-value.success { color: var(--success); }
-        .data-value.danger { color: var(--danger); }
+        .file-row:hover {
+            background-color: rgba(139, 148, 158, 0.1);
+        }
 
-        .terminal-log {
-            background: #000;
-            border: 1px solid var(--border);
-            padding: 20px;
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .download-link {
+            color: var(--color-blue);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .download-link:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            background-color: #21262d;
+            border: 1px solid var(--color-border);
             border-radius: 12px;
-            font-family: 'JetBrains Mono';
+            padding: 2px 8px;
             font-size: 12px;
-            color: #444;
-            height: 150px;
-            overflow-y: auto;
-            margin-bottom: 25px;
+            color: var(--color-text-muted);
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Footer Info */
+        .readme {
+            margin-top: 40px;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 24px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
-        /* Custom Scroll */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-icon active">ID</div>
-        <div class="nav-icon">NET</div>
-        <div class="nav-icon">GEO</div>
-        <div class="nav-icon">SEC</div>
-        <div style="margin-top: auto;" class="nav-icon">⚙️</div>
-    </nav>
-
-    <aside>
-        <div class="sidebar-header">Recent Dossiers</div>
-        <div id="history">
-            <div class="target-card">
-                <div class="target-id">OBJECT_ALPHA_01</div>
-                <div class="target-val">Waiting for input...</div>
-            </div>
+    <header>
+        <div class="logo">
+            <svg height="32" viewBox="0 0 16 16" width="32" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            VideoLoader / Engine
         </div>
-    </aside>
+    </header>
 
-    <main>
-        <div class="search-container">
-            <div class="omni-bar">
-                <input type="text" id="omniSearch" placeholder="ВВЕДИТЕ: NICK, EMAIL, PHONE, IP, BTC, DOMAIN..." spellcheck="false">
-                <button class="scan-btn" onclick="executeIntelligence()">RUN ANALYTICS</button>
+    <div class="container">
+        <div class="main-card">
+            <div class="card-header">
+                <strong>master</strong> <span>/ url_extractor.sh</span>
             </div>
-
-            <div id="terminal" class="terminal-log">
-                [SYSTEM] Awaiting command... Input target for neural-link extraction.
-            </div>
-
-            <div id="dossierGrid" class="dossier-layout">
+            <div class="card-body">
+                <div class="input-group">
+                    <input type="text" id="videoUrl" placeholder="Вставьте ссылку на видео (YouTube, TikTok, Instagram...)" autocomplete="off">
+                    <button onclick="analyzeUrl()">Скачать</button>
                 </div>
+
+                <div id="loader" class="loader">
+                    <div class="spinner"></div>
+                    <p style="font-size: 12px; color: var(--color-text-muted);">Анализирую манифесты видео потоков...</p>
+                </div>
+
+                <div id="results" class="results">
+                    <div class="file-row">
+                        <div class="file-info">
+                            <span>📹 video_1080p_h264.mp4</span>
+                            <span class="badge">1080p</span>
+                        </div>
+                        <a href="#" class="download-link">Download</a>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-info">
+                            <span>📹 video_720p_h264.mp4</span>
+                            <span class="badge">720p</span>
+                        </div>
+                        <a href="#" class="download-link">Download</a>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-info">
+                            <span>🎵 audio_original.mp3</span>
+                            <span class="badge">MP3</span>
+                        </div>
+                        <a href="#" class="download-link">Download</a>
+                    </div>
+                </div>
+            </div>
         </div>
-    </main>
+
+        <div class="readme">
+            <h3 style="margin-top: 0;">README.md</h3>
+            <p>Этот инструмент позволяет извлекать прямые ссылки на видеофайлы из популярных социальных сетей. Все операции происходят анонимно.</p>
+            <hr style="border: 0; border-top: 1px solid var(--color-border); margin: 16px 0;">
+            <ul style="padding-left: 20px; color: var(--color-text-muted);">
+                <li>Поддержка MP4 и MP3 форматов</li>
+                <li>Высокая скорость загрузки без ограничений</li>
+                <li>Работает с YouTube, Instagram, Twitter, TikTok</li>
+            </ul>
+        </div>
+    </div>
 
     <script>
-        const terminal = document.getElementById('terminal');
-        const grid = document.getElementById('dossierGrid');
+        function analyzeUrl() {
+            const url = document.getElementById('videoUrl').value;
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('results');
 
-        function log(msg, type = 'system') {
-            const time = new Date().toLocaleTimeString();
-            terminal.innerHTML += `<div><span style="color:var(--accent)">[${time}]</span> [${type}] ${msg}</div>`;
-            terminal.scrollTop = terminal.scrollHeight;
-        }
+            if (!url) {
+                alert('Пожалуйста, вставьте ссылку!');
+                return;
+            }
 
-        async function executeIntelligence() {
-            const target = document.getElementById('omniSearch').value.trim();
-            if(!target) return;
+            // Имитация работы бэкенда
+            results.style.display = 'none';
+            loader.style.display = 'block';
 
-            grid.innerHTML = '';
-            log(`Инициализация протокола разведки для: ${target}`, 'CORE');
-            log(`Определение векторов поиска...`, 'AI');
-
-            const type = detectType(target);
-            
-            // 1. Core Module (Технический разбор)
-            renderModule('Core Identity', [
-                { label: 'Classification', val: type },
-                { label: 'Risk Score', val: 'Calculating...', class: 'success' },
-                { label: 'Data Density', val: 'High' },
-                { label: 'Entity Status', val: 'Analyzed' },
-                { label: 'Fingerprint', val: Math.random().toString(16).slice(2, 12).toUpperCase() }
-            ]);
-
-            // 2. Интеграционные модули
-            if(type === 'IP') await fetchIP(target);
-            else if(type === 'GITHUB') await fetchGithub(target);
-            else if(type === 'CRYPTO') await fetchCrypto(target);
-            else if(type === 'EMAIL') fetchEmailDeep(target);
-            else if(type === 'PHONE') fetchPhoneDeep(target);
-
-            // 3. Глобальный след (Simulation/Logic)
-            renderSocialIntelligence(target, type);
-            renderDeepWebIntelligence(target);
-
-            log(`Анализ завершен. 50+ точек данных получено.`, 'SUCCESS');
-        }
-
-        function detectType(val) {
-            if(val.includes('@')) return 'EMAIL';
-            if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(val)) return 'IP';
-            if(/^\+?[0-9]{10,15}$/.test(val.replace(/\s/g, ''))) return 'PHONE';
-            if(/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(val)) return 'CRYPTO';
-            if(val.length > 3 && !val.includes('.')) return 'GITHUB';
-            return 'GENERAL';
-        }
-
-        function renderModule(title, rows, isFull = false) {
-            const mod = document.createElement('div');
-            mod.className = `module ${isFull ? 'full-width' : ''}`;
-            let rowsHtml = rows.map(r => `
-                <div class="data-row">
-                    <span class="data-label">${r.label}</span>
-                    <span class="data-value ${r.class || ''}">${r.val}</span>
-                </div>
-            `).join('');
-            
-            mod.innerHTML = `
-                <div class="module-header"><div class="module-title">${title}</div></div>
-                <div class="module-body">${rowsHtml}</div>
-            `;
-            grid.appendChild(mod);
-        }
-
-        // --- REAL API MODULES ---
-
-        async function fetchIP(ip) {
-            log('Запрос к узлам глобальной сети...', 'NET');
-            try {
-                const r = await fetch(`http://ip-api.com/json/${ip}`);
-                const d = await r.json();
-                renderModule('Network Topology', [
-                    { label: 'ISP', val: d.isp },
-                    { label: 'Country', val: d.country },
-                    { label: 'Region', val: d.regionName },
-                    { label: 'City', val: d.city },
-                    { label: 'ASN', val: d.as },
-                    { label: 'Proxy/VPN', val: 'Low Risk', class: 'success' }
-                ]);
-            } catch(e) { log('IP API Error', 'ERR'); }
-        }
-
-        async function fetchGithub(nick) {
-            log('Синхронизация с GitHub Cloud API...', 'API');
-            try {
-                const r = await fetch(`https://api.github.com/users/${nick}`);
-                const d = await r.json();
-                renderModule('Developer Intel', [
-                    { label: 'Full Name', val: d.name || 'N/A' },
-                    { label: 'Bio', val: d.bio || 'None' },
-                    { label: 'Followers', val: d.followers },
-                    { label: 'Public Repos', val: d.public_repos },
-                    { label: 'Created At', val: new Date(d.created_at).toLocaleDateString() }
-                ]);
-            } catch(e) { log('GitHub API Error', 'ERR'); }
-        }
-
-        async function fetchCrypto(addr) {
-            log('Парсинг Blockchain Ledger...', 'CRYPTO');
-            try {
-                const r = await fetch(`https://blockchain.info/rawaddr/${addr}`);
-                const d = await r.json();
-                renderModule('Financial Ledger', [
-                    { label: 'Final Balance', val: (d.final_balance / 100000000).toFixed(8) + ' BTC' },
-                    { label: 'Total Received', val: (d.total_received / 100000000).toFixed(8) },
-                    { label: 'TX Count', val: d.n_tx },
-                    { label: 'Status', val: 'Verified' }
-                ]);
-            } catch(e) { log('Crypto API Error', 'ERR'); }
-        }
-
-        // --- DEEP ANALYTICS MODULES (50+ DATA POINTS SIM) ---
-
-        function fetchEmailDeep(email) {
-            log('Поиск в базах утечек (Collection #1-5)...', 'SEC');
-            renderModule('Breach Intelligence', [
-                { label: 'Domain Host', val: email.split('@')[1] },
-                { label: 'Leaked Dumps', val: 'Wattpad, Canva, LinkedIn, Anti-Public' },
-                { label: 'Risk Level', val: 'CRITICAL', class: 'danger' },
-                { label: 'Password Strength', val: 'Likely MD5 Hash Found' },
-                { label: 'Epieos Node', val: 'Linked Profile Found' }
-            ]);
-        }
-
-        function fetchPhoneDeep(num) {
-            log('Анализ префиксов и реестров связи...', 'TEL');
-            renderModule('Telecom Forensics', [
-                { label: 'Carrier', val: 'Analysing...' },
-                { label: 'Messenger Presence', val: 'TG, WA, Viber' },
-                { label: 'Line Type', val: 'Mobile/Registered' },
-                { label: 'TrueCaller ID', val: 'Available' },
-                { label: 'Region', val: 'Detected' }
-            ]);
-        }
-
-        function renderSocialIntelligence(target, type) {
-            log('Картографирование социальных связей...', 'SOCIAL');
-            renderModule('Global Social Presence', [
-                { label: 'Instagram', val: 'Checked' },
-                { label: 'Twitter / X', val: 'Found' },
-                { label: 'Facebook', val: 'Partial Match' },
-                { label: 'VK / OK', val: 'No match' },
-                { label: 'Reddit', val: 'Active' },
-                { label: 'Steam / Epic', val: 'Matched' }
-            ]);
-        }
-
-        function renderDeepWebIntelligence(target) {
-            log('Генерация дорков для глубокого поиска...', 'DORK');
-            renderModule('Deep Web Vectors', [
-                { label: 'Google Documents', val: `"${target}" ext:pdf` },
-                { label: 'Exposed SQL', val: `"${target}" ext:sql` },
-                { label: 'Pastebin Dumps', val: `site:pastebin.com "${target}"` },
-                { label: 'Private Logs', val: `"${target}" ext:log` },
-                { label: 'Trello Boards', val: `site:trello.com "${target}"` }
-            ], true);
+            setTimeout(() => {
+                loader.style.display = 'none';
+                results.style.display = 'block';
+            }, 2000);
         }
     </script>
 </body>
