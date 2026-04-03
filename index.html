@@ -2,432 +2,238 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ThreadsAI Bot — Автоматизация</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULTRA OSINT TERMINAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap');
-
         :root {
-            --bg: #050505;
-            --card-bg: #0a0a0a;
-            --text: #ffffff;
-            --text-gray: #888888;
-            --border: #333333;
-            --accent: #ffffff;
-            --btn-hover: #cccccc;
-            --partner-color: #9c27b0;
+            --bg-color: #0a0a0a;
+            --panel-color: #121212;
+            --accent-color: #ff2e2e;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+            --border-color: #333;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-color);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
         }
 
-        /* === СНЕГ === */
-        #snow {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* === CONTAINER === */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* === HERO SECTION === */
-        header {
-            text-align: center;
-            padding: 120px 0 80px;
+        /* Sidebar */
+        aside {
+            width: 260px;
+            background-color: var(--panel-color);
+            border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 4rem;
-            font-weight: 900;
-            letter-spacing: -2px;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            line-height: 1.1;
-            cursor: pointer; /* Секретный клик */
-            user-select: none;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: var(--text-gray);
-            max-width: 600px;
-            margin: 0 auto 30px;
-            font-weight: 300;
-        }
-
-        .free-info {
-            font-size: 0.9rem;
-            color: #aaa;
-            background: rgba(255,255,255,0.05);
-            padding: 10px 20px;
-            border-radius: 50px;
-            margin-bottom: 30px;
-            border: 1px solid #222;
-            display: inline-block;
-        }
-
-        /* === BUTTONS === */
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-            width: 100%;
-        }
-
-        .btn {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            padding: 16px 32px;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-white {
-            background: #fff;
-            color: #000;
-            border: 1px solid #fff;
-        }
-        .btn-white:hover {
-            background: var(--btn-hover);
-            border-color: var(--btn-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255,255,255,0.1);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 1px solid #444;
-        }
-        .btn-outline:hover {
-            border-color: #fff;
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-2px);
-        }
-
-        .btn-partner {
-            background: var(--partner-color);
-            color: #fff;
-            border: 1px solid var(--partner-color);
-            box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
-        }
-        .btn-partner:hover {
-            background: #ba68c8;
-            transform: translateY(-2px);
-        }
-
-        /* === GRID === */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 60px 0;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 12px;
-            transition: 0.3s;
-        }
-
-        .card:hover {
-            border-color: #666;
-            transform: translateY(-5px);
-        }
-
-        .icon { font-size: 2rem; margin-bottom: 15px; display: block; }
-        .card h3 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 700; color: #fff; }
-        .card p { font-size: 0.9rem; color: var(--text-gray); }
-
-        /* === MODAL === */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
-            opacity: 0;
-            pointer-events: none;
+        }
+
+        .logo {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 40px;
+            letter-spacing: 2px;
+        }
+
+        .nav-item {
+            padding: 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
             transition: 0.3s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: all; }
-
-        .modal {
-            background: #111;
-            border: 1px solid #333;
-            width: 100%;
-            max-width: 400px;
-            padding: 30px;
-            border-radius: 16px;
-            position: relative;
-            transform: translateY(20px);
-            transition: 0.3s;
-        }
-        .modal-overlay.active .modal { transform: translateY(0); }
-
-        .close-btn {
-            position: absolute; top: 15px; right: 20px;
-            color: #666; font-size: 24px; cursor: pointer;
-        }
-        .close-btn:hover { color: #fff; }
-
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; color: #888; font-size: 12px; margin-bottom: 5px; }
-        .form-group input {
-            width: 100%; padding: 12px;
-            background: #000; border: 1px solid #333;
-            color: #fff; border-radius: 8px; font-family: inherit;
-        }
-        .form-group input:focus { border-color: var(--partner-color); }
-
-        /* === FOOTER === */
-        footer {
-            text-align: center;
-            padding: 40px 0;
-            border-top: 1px solid var(--border);
-            color: var(--text-gray);
-            font-size: 12px;
-            margin-top: 40px;
+            color: var(--text-dim);
+            list-style: none;
         }
 
-        /* === MOBILE ADAPTATION === */
-        @media (max-width: 768px) {
-            header { padding: 60px 0 40px; }
-            h1 { font-size: 2.5rem; letter-spacing: -1px; }
-            .subtitle { font-size: 1rem; }
-            
-            .btn-group {
-                flex-direction: column;
-                width: 100%;
-                max-width: 400px;
-            }
-            .btn {
-                width: 100%;
-                padding: 14px;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                margin: 40px 0;
-            }
-            
-            .free-info {
-                font-size: 0.8rem;
-                padding: 10px;
-                line-height: 1.4;
-                border-radius: 12px;
-            }
+        .nav-item:hover, .nav-item.active {
+            background: #1d1d1d;
+            color: var(--accent-color);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-container {
+            max-width: 800px;
+        }
+
+        h1 { font-size: 2rem; margin-bottom: 10px; }
+        p { color: var(--text-dim); margin-bottom: 25px; }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            background: var(--panel-color);
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-family: 'Fira Code', monospace;
+            outline: none;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+
+        /* Output Terminal */
+        #results {
+            flex: 1;
+            background: #050505;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .res-item { margin-bottom: 15px; border-left: 2px solid var(--accent-color); padding-left: 15px; }
+        .res-title { color: var(--accent-color); font-weight: bold; display: block; margin-bottom: 5px; }
+        .res-link { color: #4aa3ff; text-decoration: none; word-break: break-all; }
+        .res-link:hover { text-decoration: underline; }
+
+        .tag {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            background: #222;
+            border-radius: 4px;
+            margin-right: 5px;
         }
     </style>
 </head>
 <body>
 
-    <canvas id="snow"></canvas>
+    <aside>
+        <div class="logo">ULTRA_OSINT</div>
+        <nav>
+            <li class="nav-item active">Dashboard</li>
+            <li class="nav-item">History</li>
+            <li class="nav-item">API Settings</li>
+            <li class="nav-item">Database Status</li>
+        </nav>
+    </aside>
 
-    <div class="container">
-        <header>
-            <h1 id="secretLogo">ThreadsAI Bot</h1>
-            <p class="subtitle">Умная автоматизация вашего аккаунта. Искусственный интеллект, авто-постинг фото и полная безопасность.</p>
+    <main>
+        <div class="search-container">
+            <h1>Универсальный поиск</h1>
+            <p>Введите Nickname, Email, IP, Телефон или Домен для анализа.</p>
             
-            <div class="free-info">
-                ℹ️ <b>Free Версия:</b> Вы можете добавить свои ответы вручную и запустить бота без PRO функций.
+            <div class="input-group">
+                <input type="text" id="targetInput" placeholder="johndoe / example@mail.com / 8.8.8.8" spellcheck="false">
+                <button onclick="startSearch()">SCAN</button>
             </div>
-
-            <div class="btn-group">
-                <a href="https://t.me/threadsget" target="_blank" class="btn btn-white">Купить PRO</a>
-                <a href="https://t.me/freethreadss" target="_blank" class="btn btn-outline">Скачать Бесплатно</a>
-                <button id="openPartner" class="btn btn-partner">🔥 Стать Партнером</button>
-            </div>
-        </header>
-
-        <section class="features">
-            <div class="card"><span class="icon">🧠</span><h3>Искусственный Интеллект (PRO)</h3><p>Бот читает пост и генерирует осмысленный ответ на языке автора. Вы задаете характер общения.</p></div>
-            <div class="card"><span class="icon">📸</span><h3>Визуальный Спам (PRO)</h3><p>Загружайте свои фото, и бот будет прикреплять их к комментариям автоматически.</p></div>
-            <div class="card"><span class="icon">🛡️</span><h3>Anti-Ban Защита</h3><p>Умные паузы, имитация ввода человека и авто-обновление страницы каждые 99 действий.</p></div>
-            <div class="card"><span class="icon">🎯</span><h3>Таргетинг</h3><p>Фильтр по ключевым словам. Бот будет работать только с постами по вашей теме (крипта, бизнес, услуги).</p></div>
-            <div class="card"><span class="icon">⚙️</span><h3>Гибкая настройка</h3><p>Выбирайте режимы: Только Фото, Только Текст или Комбо. Полный контроль над лимитами.</p></div>
-            <div class="card"><span class="icon">🎁</span><h3>Free Режим</h3><p>Даже без оплаты бот работает: использует ваши заготовленные фразы и ставит лайки.</p></div>
-        </section>
-
-        <footer>
-            &copy; 2025 ThreadsAI. Все права защищены.<br>
-            Designed for Efficacy.
-        </footer>
-    </div>
-
-    <div id="partnerModal" class="modal-overlay">
-        <div class="modal">
-            <span class="close-btn" id="closePartner">×</span>
-            <h2 style="color:#9c27b0; margin-bottom:10px;">Партнерская программа</h2>
-            <p style="color:#aaa; font-size:13px; margin-bottom:20px;">
-                Есть аудитория? Получи <b>PRO-ключ бесплатно</b> за рекламу. Заполни заявку:
-            </p>
-            
-            <div class="form-group">
-                <label>Ваше Имя / Никнейм</label>
-                <input type="text" id="pName" placeholder="Alex">
-            </div>
-            <div class="form-group">
-                <label>Ссылка на профиль (Inst/TG)</label>
-                <input type="text" id="pLink" placeholder="https://...">
-            </div>
-            <div class="form-group">
-                <label>Количество подписчиков</label>
-                <input type="number" id="pSubs" placeholder="Например: 5000">
-            </div>
-
-            <button class="btn btn-partner" style="width:100%" id="sendRequest">ОТПРАВИТЬ ЗАЯВКУ</button>
-            <div id="statusMsg" style="margin-top:15px; font-size:12px; color:#00e676; display:none; text-align:center;"></div>
         </div>
-    </div>
+
+        <div id="results">
+            <span style="color: #444;">> Ожидание ввода данных...</span>
+        </div>
+    </main>
 
     <script>
-        // === НАСТРОЙКИ TELEGRAM (ДЛЯ АДМИНА) ===
-        const TG_BOT_TOKEN = "ВСТАВЬ_ТОКЕН_БОТА"; 
-        const TG_CHAT_ID = "ВСТАВЬ_СВОЙ_ID"; 
-
-        // --- ЛОГИКА ОКНА ---
-        const modal = document.getElementById('partnerModal');
-        const btnOpen = document.getElementById('openPartner');
-        const btnClose = document.getElementById('closePartner');
-        const btnSend = document.getElementById('sendRequest');
-        const statusMsg = document.getElementById('statusMsg');
-
-        btnOpen.addEventListener('click', () => modal.classList.add('active'));
-        btnClose.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-        // --- ОТПРАВКА ---
-        btnSend.addEventListener('click', () => {
-            const name = document.getElementById('pName').value;
-            const link = document.getElementById('pLink').value;
-            const subs = document.getElementById('pSubs').value;
-
-            if(!name || !link || !subs) { alert("Заполните все поля!"); return; }
-
-            btnSend.innerText = "Отправка...";
+        function startSearch() {
+            const input = document.getElementById('targetInput').value.trim();
+            const results = document.getElementById('results');
             
-            const text = `🔥 <b>НОВАЯ ЗАЯВКА</b>\n👤 Имя: ${name}\n🔗 Ссылка: ${link}\n👥 Подписчики: ${subs}`;
-
-            if (TG_BOT_TOKEN && TG_BOT_TOKEN !== "ВСТАВЬ_ТОКЕН_БОТА") {
-                fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text, parse_mode: 'HTML' })
-                })
-                .then(res => {
-                    if(res.ok) showSuccess();
-                    else { alert("Ошибка. Напишите в Telegram."); btnSend.innerText = "ОТПРАВИТЬ"; }
-                });
-            } else {
-                // Демо режим (если токен не вставлен)
-                setTimeout(() => showSuccess(), 1000);
+            if (!input) {
+                results.innerHTML = '<span style="color: red;">[!] Ошибка: Поле ввода пусто.</span>';
+                return;
             }
-        });
 
-        function showSuccess() {
-            btnSend.style.display = 'none';
-            statusMsg.style.display = 'block';
-            statusMsg.innerHTML = "✅ <b>Заявка принята!</b><br>Мы проверим и свяжемся с вами.";
-            setTimeout(() => {
-                modal.classList.remove('active');
-                btnSend.style.display = 'block';
-                btnSend.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
-                statusMsg.style.display = 'none';
-                document.getElementById('pName').value = "";
-                document.getElementById('pLink').value = "";
-                document.getElementById('pSubs').value = "";
-            }, 3000);
+            results.innerHTML = `<span style="color: var(--accent-color);">[*] Анализ цели: ${input}</span>\n<br><br>`;
+
+            // Логика определения типа данных
+            let type = "Nickname / General";
+            if (input.includes('@')) type = "Email";
+            else if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(input)) type = "IP Address";
+            else if (input.includes('.')) type = "Domain";
+            else if (input.startsWith('+') || /^\d{10,}/.test(input)) type = "Phone";
+
+            addResult("Тип данных", type);
+
+            // Генерация ссылок в зависимости от типа
+            if (type === "Email") {
+                generateLinks([
+                    { name: "HaveIBeenPwned (Утечки)", url: `https://haveibeenpwned.com/account/${input}` },
+                    { name: "Hunter.io (Поиск по домену)", url: `https://hunter.io/email-verifier/${input}` },
+                    { name: "EPIEOS (Связанные Google аккаунты)", url: `https://epieos.com/?q=${input}` }
+                ]);
+            } else if (type === "IP Address") {
+                generateLinks([
+                    { name: "Shodan (Уязвимости)", url: `https://www.shodan.io/host/${input}` },
+                    { name: "IP-API (Геолокация)", url: `http://ip-api.com/#${input}` },
+                    { name: "Whois IP", url: `https://whois.domaintools.com/${input}` }
+                ]);
+            } else if (type === "Nickname / General") {
+                generateLinks([
+                    { name: "Sherlock (Поиск по соцсетям)", url: `https://www.google.com/search?q=site:instagram.com+${input}+OR+site:github.com+${input}` },
+                    { name: "Namechk (Доступность ника)", url: `https://namechk.com/` },
+                    { name: "Social Searcher", url: `https://www.social-searcher.com/search-users/?q=${input}` }
+                ]);
+            } else if (type === "Domain") {
+                generateLinks([
+                    { name: "Whois Domain", url: `https://www.whois.com/whois/${input}` },
+                    { name: "DNSDumpster", url: `https://dnsdumpster.com/` },
+                    { name: "SecurityTrails", url: `https://securitytrails.com/domain/${input}` }
+                ]);
+            }
         }
 
-        // --- СНЕГ ---
-        (function() {
-            var canvas = document.getElementById('snow'),
-                ctx = canvas.getContext('2d'),
-                width = canvas.width = window.innerWidth,
-                height = canvas.height = window.innerHeight,
-                particles = [];
+        function addResult(title, content) {
+            const results = document.getElementById('results');
+            results.innerHTML += `
+                <div class="res-item">
+                    <span class="res-title">${title}</span>
+                    <span>${content}</span>
+                </div>
+            `;
+        }
 
-            var snowflakeCount = window.innerWidth < 600 ? 40 : 80;
-
-            function init() {
-                for(var i = 0; i < snowflakeCount; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        r: Math.random() * 2 + 1,
-                        d: Math.random() * snowflakeCount
-                    })
-                }
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, width, height);
-                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-                ctx.beginPath();
-                for(var i = 0; i < snowflakeCount; i++) {
-                    var p = particles[i];
-                    ctx.moveTo(p.x, p.y);
-                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-                }
-                ctx.fill();
-                update();
-            }
-
-            function update() {
-                for(var i = 0; i < snowflakeCount; i++) {
-                    var p = particles[i];
-                    p.y += Math.cos(p.d) + 1 + p.r / 2;
-                    p.x += Math.sin(0) * 0.5;
-                    if(p.x > width + 5 || p.x < -5 || p.y > height) {
-                        particles[i] = { x: Math.random() * width, y: -10, r: p.r, d: p.d };
-                    }
-                }
-            }
-            setInterval(draw, 33);
-            window.addEventListener('resize', function() {
-                width = canvas.width = window.innerWidth;
-                height = canvas.height = window.innerHeight;
-                snowflakeCount = window.innerWidth < 600 ? 40 : 80;
+        function generateLinks(data) {
+            data.forEach(item => {
+                const results = document.getElementById('results');
+                results.innerHTML += `
+                    <div class="res-item">
+                        <span class="tag">EXTERNAL DB</span>
+                        <span class="res-title">${item.name}</span>
+                        <a href="${item.url}" target="_blank" class="res-link">${item.url}</a>
+                    </div>
+                `;
             });
-            init();
-        })();
+        }
     </script>
 </body>
 </html>
