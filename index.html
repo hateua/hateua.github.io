@@ -2,346 +2,378 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHOENIX ULTIMATE OSINT v2.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>VOID OSINT | NEURAL INTERFACE v3.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #050505;
-            --card: #0f0f0f;
-            --accent: #00ff41; /* Хакерский зеленый */
-            --blue: #00d4ff;
-            --danger: #ff2e2e;
+            --bg: #030303;
+            --panel: rgba(15, 15, 15, 0.95);
+            --accent: #00f3ff; /* Neon Cyan */
+            --danger: #ff003c;
+            --matrix: #00ff41;
             --text: #e0e0e0;
-            --border: #1a1a1a;
+            --border: #222;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Fira Code', monospace;
             height: 100vh;
-            display: flex;
             overflow: hidden;
+            display: flex;
         }
 
-        /* --- SIDEBAR --- */
+        /* Matrix Background Canvas */
+        #matrix {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1; opacity: 0.15;
+        }
+
+        /* Sidebar */
         aside {
-            width: 280px;
-            background: var(--card);
+            width: 300px;
+            background: var(--panel);
             border-right: 1px solid var(--border);
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            padding: 30px 20px;
             z-index: 10;
+            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-family: 'Fira Code', monospace;
+            font-family: 'Orbitron', sans-serif;
             color: var(--accent);
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 40px;
-            text-shadow: 0 0 10px var(--accent);
+            font-size: 1.4rem;
+            margin-bottom: 50px;
+            text-align: center;
+            letter-spacing: 4px;
+            text-shadow: 0 0 15px var(--accent);
         }
 
-        .nav-link {
-            padding: 12px;
-            color: #666;
-            text-decoration: none;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            transition: 0.3s;
+        .nav-btn {
+            padding: 15px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #555;
+            text-align: left;
             cursor: pointer;
+            transition: 0.3s;
+            border-radius: 4px;
+            margin-bottom: 10px;
             font-size: 0.9rem;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: #1a1a1a;
+        .nav-btn:hover, .nav-btn.active {
+            border-color: var(--accent);
             color: var(--accent);
+            background: rgba(0, 243, 255, 0.05);
         }
 
-        /* --- MAIN CONTENT --- */
+        /* Main Area */
         main {
             flex: 1;
             padding: 40px;
+            z-index: 10;
             overflow-y: auto;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        .container { max-width: 1000px; margin: 0 auto; }
+        .tab-content { display: none; animation: slideIn 0.4s ease; }
+        .tab-content.active { display: block; }
 
-        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
-        header p { color: #666; margin-bottom: 30px; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* Search Area */
-        .search-section {
-            background: var(--card);
-            padding: 30px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .input-wrapper {
+        /* Search Engine UI */
+        .search-bar {
             display: flex;
             gap: 15px;
-            background: #000;
-            padding: 10px;
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
             border-radius: 12px;
             border: 1px solid var(--border);
+            margin-bottom: 30px;
         }
 
         input {
             flex: 1;
             background: transparent;
             border: none;
+            border-bottom: 2px solid var(--border);
             color: var(--accent);
             padding: 10px;
-            font-family: 'Fira Code', monospace;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             outline: none;
-        }
-
-        button {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
             transition: 0.3s;
         }
 
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px var(--accent);
+        input:focus { border-color: var(--accent); }
+
+        button.scan-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 0 40px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
-        /* Results Grid */
-        .results-grid {
+        /* Tools / Cards */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
 
         .card {
-            background: var(--card);
+            background: rgba(20, 20, 20, 0.8);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 20px;
-            transition: 0.3s;
-            animation: fadeIn 0.5s ease;
+            position: relative;
         }
 
-        .card:hover { border-color: var(--accent); }
+        .card:hover { border-color: var(--accent); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
 
-        .card-header {
+        .card-title {
+            color: var(--accent);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 10px;
         }
 
-        .type-tag {
-            font-size: 0.7rem;
-            background: #1a1a1a;
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: var(--blue);
-            text-transform: uppercase;
-        }
-
-        .link-item {
+        .link-list a {
             display: block;
-            color: #ccc;
+            color: #aaa;
             text-decoration: none;
             padding: 8px 0;
             font-size: 0.9rem;
-            border-bottom: 1px solid #151515;
-            transition: 0.2s;
+            border-bottom: 1px solid #1a1a1a;
         }
 
-        .link-item:hover { color: var(--accent); padding-left: 5px; }
+        .link-list a:hover { color: #fff; transform: translateX(5px); transition: 0.2s; }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .terminal-log {
-            font-family: 'Fira Code', monospace;
+        /* Terminal Mini */
+        #log-window {
             background: #000;
+            border: 1px solid var(--matrix);
+            height: 150px;
             padding: 15px;
-            border-radius: 8px;
             font-size: 0.8rem;
-            color: #00ff41;
-            margin-bottom: 20px;
-            height: 100px;
+            color: var(--matrix);
             overflow-y: auto;
-            border-left: 3px solid var(--accent);
+            margin-bottom: 20px;
+            border-radius: 4px;
         }
 
+        /* Tool Inputs */
+        textarea {
+            width: 100%;
+            background: #000;
+            border: 1px solid var(--border);
+            color: var(--accent);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            resize: none;
+        }
     </style>
 </head>
 <body>
 
+    <canvas id="matrix"></canvas>
+
     <aside>
-        <div class="logo">> PHOENIX_OSINT</div>
-        <div class="nav-link active">Dashboard</div>
-        <div class="nav-link">Google Dorks</div>
-        <div class="nav-link">Social Analysis</div>
-        <div class="nav-link">Crypto Tracker</div>
-        <div class="nav-link">DarkWeb Search</div>
-        <div style="margin-top: auto; color: #333; font-size: 0.7rem;">v2.0.4 Stable Build</div>
+        <div class="logo">VOID_OSINT</div>
+        <button class="nav-btn active" onclick="showTab('scanner')">MAIN_SCANNER</button>
+        <button class="nav-btn" onclick="showTab('tools')">THE_LAB (LOCAL)</button>
+        <button class="nav-btn" onclick="showTab('dorks')">DEEP_DORKING</button>
+        <button class="nav-btn" onclick="showTab('about')">SYSTEM_INFO</button>
+        
+        <div id="status" style="margin-top: auto; font-size: 0.7rem; color: #444;">
+            CORE_STATUS: <span style="color: var(--matrix);">ONLINE</span><br>
+            ENCRYPTION: AES-256
+        </div>
     </aside>
 
     <main>
-        <div class="container">
-            <header>
-                <h1>Система Поиска</h1>
-                <p>Единая точка входа для анализа любых цифровых следов.</p>
-            </header>
-
-            <section class="search-section">
-                <div class="input-wrapper">
-                    <input type="text" id="mainInput" placeholder="Введите Nick, Email, Phone, IP, BTC или Домен..." spellcheck="false">
-                    <button onclick="performOSINT()">Сканировать</button>
-                </div>
-            </section>
-
-            <div id="terminal" class="terminal-log">
-                [SYSTEM] Ожидание инициализации...<br>
-                [SYSTEM] Введите данные для начала глубокого анализа.
+        <div id="scanner" class="tab-content active">
+            <div id="log-window">> SYSTEM READY...</div>
+            
+            <div class="search-bar">
+                <input type="text" id="target" placeholder="Enter Target (Nick, IP, Email, Phone, VIN, BTC)...">
+                <button class="scan-btn" onclick="runAnalysis()">SCAN</button>
             </div>
 
-            <div id="resultsGrid" class="results-grid">
+            <div id="results" class="grid"></div>
+        </div>
+
+        <div id="tools" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--accent);">LOCAL TOOLS</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">BASE64 DECODER</div>
+                    <textarea id="b64input" placeholder="Enter Base64 string..."></textarea>
+                    <button class="scan-btn" style="width: 100%; padding: 10px;" onclick="decodeB64()">DECODE</button>
+                    <div id="b64output" style="margin-top: 10px; color: var(--matrix); font-size: 0.8rem;"></div>
                 </div>
+                <div class="card">
+                    <div class="card-title">HASH GENERATOR (SHA-256)</div>
+                    <textarea id="hashinput" placeholder="Enter Text..."></textarea>
+                    <button class="scan-btn" style="width: 100%; padding: 10px;" onclick="genHash()">HASH IT</button>
+                    <div id="hashoutput" style="margin-top: 10px; color: var(--matrix); font-size: 0.8rem; word-break: break-all;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dorks" class="tab-content">
+            <h2 style="margin-bottom: 20px; color: var(--danger);">EXPLOIT GOOGLE DORKS</h2>
+            <div id="dorkResults" class="grid"></div>
         </div>
     </main>
 
     <script>
-        const terminal = document.getElementById('terminal');
-        const grid = document.getElementById('resultsGrid');
+        // --- MATRIX RAIN ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
 
-        function log(msg, type = 'info') {
-            const time = new Date().toLocaleTimeString();
-            terminal.innerHTML += `<br>[${time}] ${msg}`;
-            terminal.scrollTop = terminal.scrollHeight;
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00ff41";
+            ctx.font = fontSize + "px monospace";
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // --- NAVIGATION ---
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.target.classList.add('active');
         }
 
-        function performOSINT() {
-            const val = document.getElementById('mainInput').value.trim();
-            if(!val) return log('ОШИБКА: Пустой запрос', 'error');
+        // --- OSINT ENGINE ---
+        function log(msg) {
+            const win = document.getElementById('log-window');
+            win.innerHTML += `<br>> [${new Date().toLocaleTimeString()}] ${msg}`;
+            win.scrollTop = win.scrollHeight;
+        }
 
-            grid.innerHTML = '';
-            log(`Запуск сканирования объекта: ${val}...`);
+        function runAnalysis() {
+            const target = document.getElementById('target').value.trim();
+            if(!target) return log("ERROR: NO TARGET SPECIFIED");
+
+            log(`INITIATING SCAN: ${target}`);
+            document.getElementById('results').innerHTML = '';
             
-            const data = detectType(val);
-            log(`Тип данных определен: ${data.type}`);
+            const type = detectType(target);
+            log(`TYPE DETECTED: ${type}`);
 
-            // Генерация карточек
-            renderGeneralInfo(val, data.type);
-            renderDorks(val, data.type);
-            renderSocialLinks(val, data.type);
-            renderSpecialized(val, data.type);
+            // Generate Cards
+            addResultCard("GENERAL_SEARCH", [
+                {name: "Google Global", url: `https://www.google.com/search?q="${target}"`},
+                {name: "DuckDuckGo (Untracked)", url: `https://duckduckgo.com/?q=${target}`},
+                {name: "BoardReader (Forums)", url: `https://boardreader.com/s/${target}.html`}
+            ]);
+
+            if(type === 'EMAIL') {
+                addResultCard("EMAIL_INTEL", [
+                    {name: "Epieos (Profile Finder)", url: `https://epieos.com/?q=${target}`},
+                    {name: "HaveIBeenPwned", url: `https://haveibeenpwned.com/`},
+                    {name: "Hunter.io Data", url: `https://hunter.io/search/${target}`}
+                ]);
+            } else if(type === 'IP') {
+                addResultCard("NETWORK_INTEL", [
+                    {name: "Shodan Host", url: `https://www.shodan.io/host/${target}`},
+                    {name: "Censys Scanning", url: `https://search.censys.io/hosts/${target}`},
+                    {name: "Criminal IP", url: `https://www.criminalip.io/en/asset/search?query=${target}`}
+                ]);
+            } else if(type === 'PHONE') {
+                addResultCard("PHONE_INTEL", [
+                    {name: "TrueCaller Search", url: `https://www.truecaller.com/search/ru/${target}`},
+                    {name: "Sync.me", url: `https://sync.me/search/?number=${target}`},
+                    {name: "NumLookup", url: `https://www.numlookup.com/` }
+                ]);
+            }
+            
+            // Generate Dorks
+            generateDorks(target);
         }
 
         function detectType(val) {
-            if (val.includes('@')) return {type: 'EMAIL'};
-            if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(val)) return {type: 'IP'};
-            if (/^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(val)) return {type: 'CRYPTO'};
-            if (/^\+?[1-9]\d{10,14}$/.test(val)) return {type: 'PHONE'};
-            if (val.includes('.') && val.length > 4) return {type: 'DOMAIN'};
-            return {type: 'NICKNAME'};
+            if(val.includes('@')) return 'EMAIL';
+            if(/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(val)) return 'IP';
+            if(/^\+?\d{10,}$/.test(val)) return 'PHONE';
+            if(/^[a-zA-Z0-9]{17}$/.test(val)) return 'VIN';
+            return 'NICKNAME';
         }
 
-        function createCard(title, links) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            let linksHTML = links.map(l => `<a href="${l.url}" target="_blank" class="link-item">→ ${l.name}</a>`).join('');
-            card.innerHTML = `
-                <div class="card-header">
-                    <span style="font-weight: bold">${title}</span>
-                    <span class="type-tag">External</span>
-                </div>
-                <div class="card-body">${linksHTML}</div>
-            `;
-            grid.appendChild(card);
+        function addResultCard(title, links) {
+            const grid = document.getElementById('results');
+            const linksHTML = links.map(l => `<a href="${l.url}" target="_blank">${l.name}</a>`).join('');
+            grid.innerHTML += `
+                <div class="card">
+                    <div class="card-title">${title} <span>LIVE</span></div>
+                    <div class="link-list">${linksHTML}</div>
+                </div>`;
         }
 
-        function renderGeneralInfo(val, type) {
-            let links = [
-                {name: 'Google Search', url: `https://www.google.com/search?q="${val}"`},
-                {name: 'Yandex Global', url: `https://yandex.com/search/?text=${val}`},
-                {name: 'DuckDuckGo', url: `https://duckduckgo.com/?q=${val}`}
+        function generateDorks(target) {
+            const dorkGrid = document.getElementById('dorkResults');
+            dorkGrid.innerHTML = '';
+            const dorks = [
+                {name: "Sensitive Configs", q: `"${target}" ext:cfg OR ext:conf OR ext:ini`},
+                {name: "Exposed Log Files", q: `"${target}" ext:log OR "index of /logs"`},
+                {name: "SQL/DB Dumps", q: `"${target}" ext:sql OR ext:db OR ext:sqlite`},
+                {name: "Public PDF/Docs", q: `"${target}" filetype:pdf OR filetype:doc`}
             ];
-            createCard('Общий поиск', links);
+            
+            dorks.forEach(d => {
+                const url = `https://www.google.com/search?q=${encodeURIComponent(d.q)}`;
+                dorkGrid.innerHTML += `
+                    <div class="card" style="border-color: var(--danger)">
+                        <div class="card-title" style="color: var(--danger)">DORK: ${d.name}</div>
+                        <div class="link-list"><a href="${url}" target="_blank">EXECUTE SEARCH</a></div>
+                    </div>`;
+            });
         }
 
-        function renderDorks(val, type) {
-            let links = [
-                {name: 'Поиск документов (PDF, DOC)', url: `https://www.google.com/search?q=site:text.com filetype:pdf "${val}"`},
-                {name: 'Индексированные директории', url: `https://www.google.com/search?q="${val}" intitle:"index of"`},
-                {name: 'Скрытые упоминания', url: `https://www.google.com/search?q="${val}" -site:facebook.com -site:instagram.com`}
-            ];
-            createCard('Google Dorks (Deep)', links);
+        // --- LOCAL TOOLS LOGIC ---
+        function decodeB64() {
+            const input = document.getElementById('b64input').value;
+            try { document.getElementById('b64output').innerText = atob(input); }
+            catch(e) { document.getElementById('b64output').innerText = "INVALID BASE64"; }
         }
 
-        function renderSocialLinks(val, type) {
-            if(type === 'NICKNAME' || type === 'EMAIL') {
-                const nick = val.split('@')[0];
-                let links = [
-                    {name: 'Sherlock Social Search', url: `https://www.google.com/search?q=site:instagram.com+${nick}+OR+site:twitter.com+${nick}`},
-                    {name: 'Namechk', url: `https://namechk.com/`},
-                    {name: 'Lumper (GitHub)', url: `https://github.com/search?q=${nick}&type=users`}
-                ];
-                createCard('Социальные сети', links);
-            }
-        }
-
-        function renderSpecialized(val, type) {
-            let links = [];
-            if(type === 'EMAIL') {
-                links = [
-                    {name: 'Have I Been Pwned (Утечки)', url: `https://haveibeenpwned.com/`},
-                    {name: 'Epieos (Google Account)', url: `https://epieos.com/?q=${val}`},
-                    {name: 'Hunter.io', url: `https://hunter.io/search/${val}`}
-                ];
-            } else if(type === 'IP') {
-                links = [
-                    {name: 'Shodan IP DB', url: `https://www.shodan.io/host/${val}`},
-                    {name: 'Censys Search', url: `https://search.censys.io/hosts/${val}`},
-                    {name: 'IP-API Geo', url: `http://ip-api.com/#${val}`}
-                ];
-            } else if(type === 'PHONE') {
-                links = [
-                    {name: 'NumLookup', url: `https://www.numlookup.com/`},
-                    {name: 'TrueCaller Web', url: `https://www.truecaller.com/search/ru/${val}`},
-                    {name: 'Sync.me', url: `https://sync.me/search/?number=${val}`}
-                ];
-            } else if(type === 'CRYPTO') {
-                links = [
-                    {name: 'Blockchain Explorer', url: `https://www.blockchain.com/explorer/addresses/btc/${val}`},
-                    {name: 'Whale Alert', url: `https://whale-alert.io/`}
-                ];
-            } else if(type === 'DOMAIN') {
-                links = [
-                    {name: 'Whois History', url: `https://whois.domaintools.com/${val}`},
-                    {name: 'SecurityTrails', url: `https://securitytrails.com/domain/${val}`},
-                    {name: 'Wayback Machine', url: `https://web.archive.org/web/*/${val}`}
-                ];
-            }
-
-            if(links.length > 0) createCard('Спец. инструменты', links);
+        async function genHash() {
+            const msg = document.getElementById('hashinput').value;
+            const msgUint8 = new TextEncoder().encode(msg);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            document.getElementById('hashoutput').innerText = hashHex;
         }
     </script>
 </body>
